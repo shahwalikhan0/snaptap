@@ -1,7 +1,7 @@
 import React from "react";
 import { ScrollView, View, StyleSheet, TouchableOpacity } from "react-native";
 import { Text, Divider } from "@rneui/themed";
-import Card from "./Card";
+import Card from "./components/Card";
 
 const sections = [
   { title: "Products" },

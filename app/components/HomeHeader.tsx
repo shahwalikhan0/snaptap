@@ -1,5 +1,6 @@
 import { Icon } from "@rneui/themed";
 import React from "react";
+// import { styles } from "@/app/assets/styles/home-header";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 // import Icon from "react-native-vector-icons/FontAwesome";
 

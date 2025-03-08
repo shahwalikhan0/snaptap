@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, TouchableOpacity, StyleSheet } from "react-native";
-import ModelViewer from "./model-viewer";
+import ModelViewer from "../model-viewer";
 import { useNavigation } from "@react-navigation/native";
 
 const Card: React.FC = () => {
