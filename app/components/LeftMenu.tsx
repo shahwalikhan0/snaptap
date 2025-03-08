@@ -13,7 +13,7 @@ import Modal from "react-native-modal";
 
 const { width } = Dimensions.get("window");
 
-export default function SideMenu({
+const SideMenu = ({
   isVisible,
   closeMenu,
   setSelectedItem,
@@ -21,7 +21,11 @@ export default function SideMenu({
   isVisible: boolean;
   closeMenu: () => void;
   setSelectedItem: (item: string) => void;
-}) {
+}) => {
+  const handleItemClick = (item: string) => {
+    setSelectedItem(item);
+    closeMenu();
+  };
   return (
     <Modal
       isVisible={isVisible}
@@ -34,37 +38,81 @@ export default function SideMenu({
       <View style={styles.sideMenuWrapper}>
         <TouchableOpacity style={{ alignItems: "center" }}>
           <Image
-            source={require("@/assets/images/icon.png")}
+            source={require("@/assets/images/userprofile-icon.png")}
             style={styles.icon}
           />
         </TouchableOpacity>
+
         <View style={styles.menuItemsWrapper}>
-          <Text style={styles.menuText}>Side Menu</Text>
+          <Text style={styles.menuTitle}>Profile</Text>
+          <View style={styles.divider} />
 
           <TouchableOpacity
             style={styles.menuItems}
-            onPress={() => setSelectedItem(MENU_ITEMS.PROFILE)}
+            onPress={() => handleItemClick("profile")}
           >
-            <Text>Profile</Text>
             <Icon name="user" size={20} color="black" type="font-awesome" />
+            <Text>Personal Information</Text>
           </TouchableOpacity>
+          <View style={styles.menuItemsDivider} />
+
           <TouchableOpacity
             style={styles.menuItems}
-            onPress={() => setSelectedItem(MENU_ITEMS.SETTINGS)}
+            onPress={() => handleItemClick("payment")}
           >
-            <Text>Settings</Text>
+            <Icon
+              name="credit-card"
+              size={15}
+              color="black"
+              type="font-awesome"
+            />
+            <Text>Payment & Subscriptions</Text>
+          </TouchableOpacity>
+          <View style={styles.menuItemsDivider} />
+
+          <TouchableOpacity
+            style={styles.menuItems}
+            onPress={() => handleItemClick("settings")}
+          >
             <Icon name="cog" size={20} color="black" type="font-awesome" />
+            <Text>Settings</Text>
+          </TouchableOpacity>
+          <View style={styles.menuItemsDivider} />
+
+          <TouchableOpacity
+            style={styles.menuItems}
+            onPress={() => handleItemClick("help")}
+          >
+            <Icon
+              name="question-circle"
+              size={20}
+              color="black"
+              type="font-awesome"
+            />
+            <Text>Help & Support</Text>
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.closeButton} onPress={closeMenu}>
-          <Icon name="close" size={20} color="red" type="font-awesome" />
-          <Text>Close</Text>
-        </TouchableOpacity>
+        {/* Footer Buttons */}
+        <View style={styles.footerButtons}>
+          {/* <TouchableOpacity style={styles.closeButton} onPress={closeMenu}>
+            <Icon name="close" size={30} color="red" type="font-awesome" />
+            <Text style={styles.closeText}>Close</Text>
+          </TouchableOpacity> */}
+
+          <TouchableOpacity
+            style={styles.logoutButton}
+            onPress={() => handleItemClick("logout")}
+          >
+            <Text style={styles.logoutText}>Log Out</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </Modal>
   );
-}
+};
+export default SideMenu;
+
 const styles = StyleSheet.create({
   modal: {
     margin: 0,
@@ -76,37 +124,67 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 20,
     flexDirection: "column",
-    justifyContent: "space-between", // Ensures space between elements
+    justifyContent: "space-between",
   },
   menuItemsWrapper: {
+    flex: 1,
     marginTop: 20,
   },
-  menuText: {
-    fontSize: 20,
+  menuTitle: {
+    fontSize: 25,
     fontWeight: "bold",
+    alignSelf: "center",
   },
-  closeButton: {
-    marginTop: "auto", // Pushes it to the bottom
-    color: "red",
-    fontSize: 16,
-    display: "flex",
-    flexDirection: "row",
-    gap: 10,
-    marginBottom: 20,
-    alignItems: "center",
-    alignSelf: "center", // Centers the close button horizontally
+  divider: {
+    borderBottomWidth: 1,
+    borderBottomColor: "grey",
+    marginTop: 10,
+    marginVertical: 5,
+    marginHorizontal: 2,
+  },
+  menuItemsDivider: {
+    borderBottomWidth: 0.8,
+    borderBottomColor: "lightgrey",
+    marginVertical: 10,
   },
   menuItems: {
-    display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 10,
-    fontSize: 16,
+    alignItems: "center",
+    gap: 20,
+    paddingVertical: 10,
+  },
+  footerButtons: {
+    alignItems: "center",
+    paddingBottom: 20,
+  },
+  closeButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  closeText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "red",
+  },
+  logoutButton: {
+    marginTop: 15,
+    width: "80%",
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: "lightgrey",
+    alignItems: "center",
+    borderRadius: 10,
+  },
+  logoutText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "red",
   },
   icon: {
     width: 100,
     height: 100,
     resizeMode: "contain",
-    borderRadius: "50%",
+    borderRadius: 50,
   },
 });

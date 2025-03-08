@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, StyleSheet, SafeAreaView } from "react-native";
+import { View, Text, SafeAreaView, StyleSheet } from "react-native";
 import { useColorScheme } from "react-native";
-import { Link } from "expo-router";
+import { useRouter } from "expo-router";
 import HomeHeader from "./components/HomeHeader";
 import SideMenu from "./components/LeftMenu";
 import Home from "./home";
@@ -18,22 +18,34 @@ export default function Index() {
   const [selectedItem, setSelectedItem] = useState<string>("home");
   const [userData, setUserData] = useState<UserDataType>(tempUserData);
   const colorScheme = useColorScheme();
+  const router = useRouter();
 
   const handleShowMenu = () => {
     setMenuVisible(!menuVisible);
   };
+
+  const pageRoutes: { [key: string]: string } = {
+    profile: "/ProfileScreen",
+    payment: "/PaymentsScreen",
+    settings: "/SettingsScreen",
+    help: "/HelpScreen",
+  };
+
   useEffect(() => {
-    console.log("selectedItem", selectedItem);
+    if (selectedItem in pageRoutes) {
+      router.push(pageRoutes[selectedItem] as any);
+    } else if (selectedItem === "logout") {
+      console.log("Logging out...");
+    }
   }, [selectedItem]);
+
   return (
     <SafeAreaView style={styles.container}>
-      {/* Fixed Header */}
       <HomeHeader openMenu={handleShowMenu} />
       <Home />
       {/* Side Menu */}
       <SideMenu
         isVisible={menuVisible}
-        // closeMenu={() => setMenuVisible(false)}
         closeMenu={handleShowMenu}
         setSelectedItem={setSelectedItem}
       />
