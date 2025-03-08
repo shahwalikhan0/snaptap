@@ -1,7 +1,8 @@
-import React from "react";
-import { Text, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { Text, TouchableOpacity, StyleSheet, Pressable } from "react-native";
 import ModelViewer from "../model-viewer";
 import { useNavigation } from "@react-navigation/native";
+import { router, useRouter } from "expo-router";
 
 const Card: React.FC = () => {
   const navigation = useNavigation();

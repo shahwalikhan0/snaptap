@@ -1,4 +1,3 @@
-import React from "react";
 import {
   View,
   Text,
@@ -7,8 +6,11 @@ import {
   TouchableOpacity,
   Linking,
   Platform,
+  Alert,
 } from "react-native";
 import { WebView } from "react-native-webview";
+import * as WebBrowser from "expo-web-browser";
+import React, { useState } from "react";
 
 const ProductView = () => {
   const glbModelUrl =
@@ -16,13 +18,17 @@ const ProductView = () => {
   const usdzModelUrl =
     "https://modelviewer.dev/shared-assets/models/Astronaut.usdz";
   const productWebsite = "https://example.com/product";
+  const [showWebView, setShowWebView] = useState(false);
 
   // Open AR based on platform
-  const openAR = () => {
+  const openAR = async () => {
     if (Platform.OS === "ios") {
-      Linking.openURL(usdzModelUrl); // Opens Quick Look
+      await WebBrowser.openBrowserAsync(usdzModelUrl);
+    } else if (Platform.OS === "android") {
+      setShowWebView(true);
     } else {
-      Linking.openURL(glbModelUrl); // Opens in browser for Android
+      Alert.alert("Device does not support AR.");
+      console.log("Device does not support AR.");
     }
   };
 
