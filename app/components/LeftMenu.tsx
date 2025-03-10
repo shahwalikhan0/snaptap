@@ -22,6 +22,7 @@ const SideMenu = ({
   closeMenu: () => void;
   setSelectedItem: (item: string) => void;
 }) => {
+  // REMOVE THIS
   const handleItemClick = (item: string) => {
     setSelectedItem(item);
     closeMenu();
@@ -49,7 +50,7 @@ const SideMenu = ({
 
           <TouchableOpacity
             style={styles.menuItems}
-            onPress={() => handleItemClick("profile")}
+            onPress={() => setSelectedItem(MENU_ITEMS.PROFILE)}
           >
             <Icon name="user" size={20} color="black" type="font-awesome" />
             <Text>Personal Information</Text>
@@ -58,7 +59,7 @@ const SideMenu = ({
 
           <TouchableOpacity
             style={styles.menuItems}
-            onPress={() => handleItemClick("payment")}
+            onPress={() => setSelectedItem(MENU_ITEMS.PAYMENT)}
           >
             <Icon
               name="credit-card"

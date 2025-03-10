@@ -1,6 +1,7 @@
 export const MENU_ITEMS = {
+  HOME: "Home",
   PROFILE: "Profile",
   SETTINGS: "Settings",
-  PAYMENT: "Payment & Subscriptions",
-  HELP: "Help & Support",
+  PAYMENT: "Payment",
+  HELP: "Help",
 };

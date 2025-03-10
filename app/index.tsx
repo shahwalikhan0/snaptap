@@ -7,6 +7,9 @@ import SideMenu from "./components/LeftMenu";
 import Home from "./home";
 import ModelViewer from "./model-viewer";
 import { UserDataType } from "./types/user-data";
+import ProfileScreen from "./ProfileScreen";
+import { MENU_ITEMS } from "./constants/menu-items";
+import PaymentsScreen from "./PaymentsScreen";
 
 const tempUserData: UserDataType = {
   name: "Shah",
@@ -15,7 +18,7 @@ const tempUserData: UserDataType = {
 
 export default function Index() {
   const [menuVisible, setMenuVisible] = useState<boolean>(false);
-  const [selectedItem, setSelectedItem] = useState<string>("home");
+  const [selectedItem, setSelectedItem] = useState<string>(MENU_ITEMS.HOME);
   const [userData, setUserData] = useState<UserDataType>(tempUserData);
   const colorScheme = useColorScheme();
   const router = useRouter();
@@ -24,25 +27,39 @@ export default function Index() {
     setMenuVisible(!menuVisible);
   };
 
-  const pageRoutes: { [key: string]: string } = {
-    profile: "/ProfileScreen",
-    payment: "/PaymentsScreen",
-    settings: "/SettingsScreen",
-    help: "/HelpScreen",
-  };
+  // const pageRoutes: { [key: string]: string } = {
+  //   profile: "/ProfileScreen",
+  //   payment: "/PaymentsScreen",
+  //   settings: "/SettingsScreen",
+  //   help: "/HelpScreen",
+  // };
 
-  useEffect(() => {
-    if (selectedItem in pageRoutes) {
-      router.push(pageRoutes[selectedItem] as any);
-    } else if (selectedItem === "logout") {
-      console.log("Logging out...");
+  // useEffect(() => {
+  //   if (selectedItem in pageRoutes) {
+  //     router.push(pageRoutes[selectedItem] as any);
+  //   } else if (selectedItem === "logout") {
+  //     console.log("Logging out...");
+  //   }
+  // }, [selectedItem]);
+
+  //
+  const handleFilterSelectedPage = (selectedItem: string) => {
+    if (selectedItem === MENU_ITEMS.PROFILE) {
+      return <ProfileScreen navigation={null} />;
+    } else if (selectedItem === MENU_ITEMS.PAYMENT) {
+      return <PaymentsScreen navigation={null} />;
     }
+    return <Home />;
+  };
+  useEffect(() => {
+    handleFilterSelectedPage(selectedItem);
+    handleShowMenu();
+    console.log("Selected Item: ", handleFilterSelectedPage(selectedItem));
   }, [selectedItem]);
-
   return (
     <SafeAreaView style={styles.container}>
       <HomeHeader openMenu={handleShowMenu} />
-      <Home />
+      <View>{handleFilterSelectedPage(selectedItem)}</View>
       {/* Side Menu */}
       <SideMenu
         isVisible={menuVisible}
