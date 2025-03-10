@@ -22,11 +22,6 @@ const SideMenu = ({
   closeMenu: () => void;
   setSelectedItem: (item: string) => void;
 }) => {
-  // REMOVE THIS
-  const handleItemClick = (item: string) => {
-    setSelectedItem(item);
-    closeMenu();
-  };
   return (
     <Modal
       isVisible={isVisible}
@@ -73,7 +68,7 @@ const SideMenu = ({
 
           <TouchableOpacity
             style={styles.menuItems}
-            onPress={() => handleItemClick("settings")}
+            onPress={() => setSelectedItem(MENU_ITEMS.SETTINGS)}
           >
             <Icon name="cog" size={20} color="black" type="font-awesome" />
             <Text>Settings</Text>
@@ -82,7 +77,7 @@ const SideMenu = ({
 
           <TouchableOpacity
             style={styles.menuItems}
-            onPress={() => handleItemClick("help")}
+            onPress={() => setSelectedItem(MENU_ITEMS.HELP)}
           >
             <Icon
               name="question-circle"
@@ -96,14 +91,9 @@ const SideMenu = ({
 
         {/* Footer Buttons */}
         <View style={styles.footerButtons}>
-          {/* <TouchableOpacity style={styles.closeButton} onPress={closeMenu}>
-            <Icon name="close" size={30} color="red" type="font-awesome" />
-            <Text style={styles.closeText}>Close</Text>
-          </TouchableOpacity> */}
-
           <TouchableOpacity
             style={styles.logoutButton}
-            onPress={() => handleItemClick("logout")}
+            onPress={() => setSelectedItem(MENU_ITEMS.HOME)}
           >
             <Text style={styles.logoutText}>Log Out</Text>
           </TouchableOpacity>

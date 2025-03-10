@@ -9,7 +9,6 @@ export default function HelpSupportScreen({ navigation }: { navigation: any }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <HomeHeader openMenu={openMenu} />
       <View style={styles.content}>
         <Text style={styles.text}>Help & Support Page</Text>
       </View>

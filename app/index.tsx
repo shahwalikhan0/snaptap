@@ -5,11 +5,12 @@ import { useRouter } from "expo-router";
 import HomeHeader from "./components/HomeHeader";
 import SideMenu from "./components/LeftMenu";
 import Home from "./home";
-import ModelViewer from "./model-viewer";
 import { UserDataType } from "./types/user-data";
 import ProfileScreen from "./ProfileScreen";
 import { MENU_ITEMS } from "./constants/menu-items";
 import PaymentsScreen from "./PaymentsScreen";
+import SettingsScreen from "./SettingsScreen";
+import HelpScreen from "./HelpScreen";
 
 const tempUserData: UserDataType = {
   name: "Shah",
@@ -27,42 +28,29 @@ export default function Index() {
     setMenuVisible(!menuVisible);
   };
 
-  // const pageRoutes: { [key: string]: string } = {
-  //   profile: "/ProfileScreen",
-  //   payment: "/PaymentsScreen",
-  //   settings: "/SettingsScreen",
-  //   help: "/HelpScreen",
-  // };
-
-  // useEffect(() => {
-  //   if (selectedItem in pageRoutes) {
-  //     router.push(pageRoutes[selectedItem] as any);
-  //   } else if (selectedItem === "logout") {
-  //     console.log("Logging out...");
-  //   }
-  // }, [selectedItem]);
-
-  //
   const handleFilterSelectedPage = (selectedItem: string) => {
     if (selectedItem === MENU_ITEMS.PROFILE) {
       return <ProfileScreen navigation={null} />;
     } else if (selectedItem === MENU_ITEMS.PAYMENT) {
       return <PaymentsScreen navigation={null} />;
+    } else if (selectedItem === MENU_ITEMS.SETTINGS) {
+      return <SettingsScreen navigation={null} />;
+    } else if (selectedItem === MENU_ITEMS.HELP) {
+      return <HelpScreen navigation={null} />;
     }
     return <Home />;
   };
+
   useEffect(() => {
     handleFilterSelectedPage(selectedItem);
     handleShowMenu();
     console.log("Selected Item: ", handleFilterSelectedPage(selectedItem));
   }, [selectedItem]);
+
   return (
     <SafeAreaView style={styles.container}>
       <HomeHeader openMenu={handleShowMenu} />
-      <ScrollView>
-        {handleFilterSelectedPage(selectedItem)}
-        {/* <Home /> */}
-      </ScrollView>
+      <ScrollView>{handleFilterSelectedPage(selectedItem)}</ScrollView>
       {/* Side Menu */}
       <SideMenu
         isVisible={menuVisible}
