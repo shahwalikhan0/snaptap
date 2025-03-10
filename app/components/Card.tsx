@@ -1,18 +1,34 @@
-import React, { useState } from "react";
-import { Text, TouchableOpacity, StyleSheet, Pressable } from "react-native";
-import ModelViewer from "../model-viewer";
-import { useNavigation } from "@react-navigation/native";
-import { router, useRouter } from "expo-router";
+import React from "react";
+import { TouchableOpacity, StyleSheet, Image, Pressable } from "react-native";
+import ModelViewer from "./ModelViewer";
+import { useRouter } from "expo-router";
 
 const Card: React.FC = () => {
-  const navigation = useNavigation();
-
+  const router = useRouter();
+  const navigateToProductView = () => {
+    console.log("Navigating to ProductView");
+    router.push("/components/ProductView"); // Navigate to ProductView
+  };
   return (
-    <TouchableOpacity style={styles.card}>
-      <ModelViewer />
+    <TouchableOpacity style={styles.card} onPress={navigateToProductView}>
+      <Pressable
+      // onHoverIn={() => setIsHovered(true)}
+      // onHoverOut={() => setIsHovered(false)}
+      // style={[
+      //   styles.cardView,
+      //   { backgroundColor: isHovered ? "darkgrey" : "lightgrey" },
+      // ]}
+      >
+        <Image
+          source={require("@/assets/images/astronaut.jpg")}
+          style={styles.image}
+        />
+      </Pressable>
     </TouchableOpacity>
   );
 };
+
+export default Card;
 
 const styles = StyleSheet.create({
   card: {
@@ -24,10 +40,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 10,
   },
+  image: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+    position: "absolute",
+  },
   title: {
     fontSize: 16,
     fontWeight: "bold",
   },
 });
-
-export default Card;

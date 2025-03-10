@@ -2,13 +2,11 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   SafeAreaView,
-  Button,
   Platform,
   Text,
   Modal,
   TouchableOpacity,
   Alert,
-  Linking,
   StyleSheet,
   Pressable,
   Image,
@@ -24,9 +22,9 @@ const usdzModelUrl =
 
 export default function ModelViewer() {
   const router = useRouter();
-  const navigateToProductView = () => {
-    router.push("/product-view"); // Navigate to ProductView
-  };
+  // const navigateToProductView = () => {
+  //   router.push("/product-view"); // Navigate to ProductView
+  // };
   const [showWebView, setShowWebView] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -74,19 +72,7 @@ export default function ModelViewer() {
   `;
 
   return (
-    <Pressable
-      onHoverIn={() => setIsHovered(true)}
-      onHoverOut={() => setIsHovered(false)}
-      style={[
-        styles.cardView,
-        { backgroundColor: isHovered ? "darkgrey" : "lightgrey" },
-      ]}
-      onPress={navigateToProductView}
-    >
-      <Image
-        source={require("../assets/images/astronaut.jpg")}
-        style={styles.image}
-      />
+    <>
       <View style={styles.content}>
         {/* <Button title="Open in AR" onPress={navigateToProductView} /> */}
 
@@ -123,7 +109,7 @@ export default function ModelViewer() {
       >
         {isHovered ? "View Details" : "Product Name"}
       </Text>
-    </Pressable>
+    </>
   );
 }
 const styles = StyleSheet.create({

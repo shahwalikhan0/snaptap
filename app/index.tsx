@@ -5,7 +5,7 @@ import { Link } from "expo-router";
 import HomeHeader from "./components/HomeHeader";
 import SideMenu from "./components/LeftMenu";
 import Home from "./home";
-import ModelViewer from "./model-viewer";
+import ModelViewer from "./components/ModelViewer";
 import { UserDataType } from "./types/user-data";
 
 const tempUserData: UserDataType = {

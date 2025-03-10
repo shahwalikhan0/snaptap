@@ -7,6 +7,7 @@ import {
   Linking,
   Platform,
   Alert,
+  ScrollView,
 } from "react-native";
 import { WebView } from "react-native-webview";
 import * as WebBrowser from "expo-web-browser";
@@ -22,6 +23,7 @@ const ProductView = () => {
 
   // Open AR based on platform
   const openAR = async () => {
+    console.log("Here");
     if (Platform.OS === "ios") {
       await WebBrowser.openBrowserAsync(usdzModelUrl);
     } else if (Platform.OS === "android") {
@@ -90,6 +92,12 @@ const ProductView = () => {
         >
           <Text style={styles.buttonText}>🌐 Visit Website</Text>
         </TouchableOpacity>
+
+        {showWebView && (
+          <View style={styles.modelContainer}>
+            <WebView source={{ html: modelHtml }} style={styles.webView} />
+          </View>
+        )}
       </View>
     </View>
   );
