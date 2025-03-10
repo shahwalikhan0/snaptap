@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, SafeAreaView, StyleSheet } from "react-native";
+import { View, Text, SafeAreaView, StyleSheet, ScrollView } from "react-native";
 import { useColorScheme } from "react-native";
 import { useRouter } from "expo-router";
 import HomeHeader from "./components/HomeHeader";
@@ -59,7 +59,10 @@ export default function Index() {
   return (
     <SafeAreaView style={styles.container}>
       <HomeHeader openMenu={handleShowMenu} />
-      <View>{handleFilterSelectedPage(selectedItem)}</View>
+      <ScrollView>
+        {handleFilterSelectedPage(selectedItem)}
+        {/* <Home /> */}
+      </ScrollView>
       {/* Side Menu */}
       <SideMenu
         isVisible={menuVisible}
