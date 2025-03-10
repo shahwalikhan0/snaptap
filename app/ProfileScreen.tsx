@@ -2,11 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, SafeAreaView } from "react-native";
 import HomeHeader from "./components/HomeHeader";
 
-export default function ProfileScreen({ navigation }: { navigation: any }) {
-  const openMenu = () => {
-    navigation.openDrawer?.();
-  };
-
+export default function ProfileScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>

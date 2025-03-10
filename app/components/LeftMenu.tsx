@@ -22,6 +22,10 @@ const SideMenu = ({
   closeMenu: () => void;
   setSelectedItem: (item: string) => void;
 }) => {
+  const handleItemClick = (item: string) => {
+    setSelectedItem(item);
+    closeMenu();
+  };
   return (
     <Modal
       isVisible={isVisible}
@@ -29,6 +33,7 @@ const SideMenu = ({
       animationOut="slideOutLeft"
       onBackdropPress={closeMenu}
       onBackButtonPress={closeMenu}
+      useNativeDriver={true}
       style={styles.modal}
     >
       <View style={styles.sideMenuWrapper}>
@@ -45,7 +50,7 @@ const SideMenu = ({
 
           <TouchableOpacity
             style={styles.menuItems}
-            onPress={() => setSelectedItem(MENU_ITEMS.PROFILE)}
+            onPress={() => handleItemClick(MENU_ITEMS.PROFILE)}
           >
             <Icon name="user" size={20} color="black" type="font-awesome" />
             <Text>Personal Information</Text>
@@ -54,7 +59,7 @@ const SideMenu = ({
 
           <TouchableOpacity
             style={styles.menuItems}
-            onPress={() => setSelectedItem(MENU_ITEMS.PAYMENT)}
+            onPress={() => handleItemClick(MENU_ITEMS.PAYMENT)}
           >
             <Icon
               name="credit-card"
@@ -68,7 +73,7 @@ const SideMenu = ({
 
           <TouchableOpacity
             style={styles.menuItems}
-            onPress={() => setSelectedItem(MENU_ITEMS.SETTINGS)}
+            onPress={() => handleItemClick(MENU_ITEMS.SETTINGS)}
           >
             <Icon name="cog" size={20} color="black" type="font-awesome" />
             <Text>Settings</Text>
@@ -77,7 +82,7 @@ const SideMenu = ({
 
           <TouchableOpacity
             style={styles.menuItems}
-            onPress={() => setSelectedItem(MENU_ITEMS.HELP)}
+            onPress={() => handleItemClick(MENU_ITEMS.HELP)}
           >
             <Icon
               name="question-circle"
@@ -93,7 +98,7 @@ const SideMenu = ({
         <View style={styles.footerButtons}>
           <TouchableOpacity
             style={styles.logoutButton}
-            onPress={() => setSelectedItem(MENU_ITEMS.HOME)}
+            onPress={() => handleItemClick(MENU_ITEMS.HOME)}
           >
             <Text style={styles.logoutText}>Log Out</Text>
           </TouchableOpacity>
@@ -107,7 +112,6 @@ export default SideMenu;
 const styles = StyleSheet.create({
   modal: {
     margin: 0,
-    justifyContent: "flex-start",
   },
   sideMenuWrapper: {
     width: width * 0.7,

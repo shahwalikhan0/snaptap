@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, SafeAreaView, StyleSheet, ScrollView } from "react-native";
-import { useColorScheme } from "react-native";
-import { useRouter } from "expo-router";
+import { SafeAreaView, StyleSheet, ScrollView } from "react-native";
 import HomeHeader from "./components/HomeHeader";
 import SideMenu from "./components/LeftMenu";
 import Home from "./home";
@@ -20,43 +18,35 @@ const tempUserData: UserDataType = {
 export default function Index() {
   const [menuVisible, setMenuVisible] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<string>(MENU_ITEMS.HOME);
-  const [userData, setUserData] = useState<UserDataType>(tempUserData);
-  const colorScheme = useColorScheme();
-  const router = useRouter();
 
-  const handleShowMenu = () => {
-    setMenuVisible(!menuVisible);
-  };
+  const handleShowMenu = () => setMenuVisible(true);
 
-  const handleFilterSelectedPage = (selectedItem: string) => {
-    if (selectedItem === MENU_ITEMS.PROFILE) {
-      return <ProfileScreen navigation={null} />;
-    } else if (selectedItem === MENU_ITEMS.PAYMENT) {
-      return <PaymentsScreen navigation={null} />;
-    } else if (selectedItem === MENU_ITEMS.SETTINGS) {
-      return <SettingsScreen navigation={null} />;
-    } else if (selectedItem === MENU_ITEMS.HELP) {
-      return <HelpScreen navigation={null} />;
+  const handleHideMenu = () => setMenuVisible(false);
+
+  const renderSelectedPage = () => {
+    switch (selectedItem) {
+      case MENU_ITEMS.PROFILE:
+        return <ProfileScreen />;
+      case MENU_ITEMS.PAYMENT:
+        return <PaymentsScreen />;
+      case MENU_ITEMS.SETTINGS:
+        return <SettingsScreen navigation={null} />;
+      case MENU_ITEMS.HELP:
+        return <HelpScreen navigation={null} />;
+      default:
+        return <Home />;
     }
-    return <Home />;
   };
-
-  useEffect(() => {
-    handleFilterSelectedPage(selectedItem);
-    handleShowMenu();
-    console.log("Selected Item: ", handleFilterSelectedPage(selectedItem));
-  }, [selectedItem]);
 
   return (
     <SafeAreaView style={styles.container}>
-      <HomeHeader openMenu={handleShowMenu} />
-      <ScrollView>{handleFilterSelectedPage(selectedItem)}</ScrollView>
-      {/* Side Menu */}
       <SideMenu
         isVisible={menuVisible}
-        closeMenu={handleShowMenu}
+        closeMenu={handleHideMenu}
         setSelectedItem={setSelectedItem}
       />
+      <HomeHeader openMenu={handleShowMenu} setSelectedItem={setSelectedItem} />
+      <ScrollView>{renderSelectedPage()}</ScrollView>
     </SafeAreaView>
   );
 }
