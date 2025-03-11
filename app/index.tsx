@@ -3,6 +3,7 @@ import { SafeAreaView, StyleSheet, ScrollView } from "react-native";
 import HomeHeader from "./components/HomeHeader";
 import SideMenu from "./components/LeftMenu";
 import Home from "./home";
+import ModelViewer from "./components/ModelViewer";
 import { UserDataType } from "./types/user-data";
 import ProfileScreen from "./ProfileScreen";
 import { MENU_ITEMS } from "./constants/menu-items";
