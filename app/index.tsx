@@ -5,7 +5,7 @@ import { Link } from "expo-router";
 import HomeHeader from "./components/HomeHeader";
 import SideMenu from "./components/LeftMenu";
 import Home from "./home";
-import ModelViewer from "./model-viewer";
+import ModelViewer from "./components/ModelViewer";
 import { UserDataType } from "./types/user-data";
 
 const tempUserData: UserDataType = {
@@ -15,13 +15,16 @@ const tempUserData: UserDataType = {
 
 export default function Index() {
   const [menuVisible, setMenuVisible] = useState<boolean>(false);
+  const [selectedItem, setSelectedItem] = useState<string>("home");
   const [userData, setUserData] = useState<UserDataType>(tempUserData);
   const colorScheme = useColorScheme();
 
   const handleShowMenu = () => {
     setMenuVisible(!menuVisible);
   };
-
+  useEffect(() => {
+    console.log("selectedItem", selectedItem);
+  }, [selectedItem]);
   return (
     <SafeAreaView style={styles.container}>
       {/* Fixed Header */}
@@ -32,6 +35,7 @@ export default function Index() {
         isVisible={menuVisible}
         // closeMenu={() => setMenuVisible(false)}
         closeMenu={handleShowMenu}
+        setSelectedItem={setSelectedItem}
       />
     </SafeAreaView>
   );
