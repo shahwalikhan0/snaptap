@@ -1,12 +1,16 @@
 import React from "react";
 import { View, Text, StyleSheet, SafeAreaView } from "react-native";
-import HomeHeader from "./components/HomeHeader";
+import HomeHeader from "../components/HomeHeader";
 
-export default function PaymentsScreen() {
+export default function HelpSupportScreen({ navigation }: { navigation: any }) {
+  const openMenu = () => {
+    navigation.openDrawer?.();
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.text}>Payments & Subscription Page</Text>
+        <Text style={styles.text}>Help & Support Page</Text>
       </View>
     </SafeAreaView>
   );

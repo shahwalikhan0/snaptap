@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import { SafeAreaView, StyleSheet, ScrollView } from "react-native";
 import HomeHeader from "./components/HomeHeader";
 import SideMenu from "./components/LeftMenu";
-import Home from "./home";
+import Home from "./pages/home";
 import ModelViewer from "./components/ModelViewer";
 import { UserDataType } from "./types/user-data";
-import ProfileScreen from "./ProfileScreen";
+import ProfileScreen from "./pages/ProfileScreen";
 import { MENU_ITEMS } from "./constants/menu-items";
-import PaymentsScreen from "./PaymentsScreen";
-import SettingsScreen from "./SettingsScreen";
-import HelpScreen from "./HelpScreen";
+import PaymentsScreen from "./pages/PaymentsScreen";
+import SettingsScreen from "./pages/SettingsScreen";
+import HelpScreen from "./pages/HelpScreen";
 
 const tempUserData: UserDataType = {
   name: "Shah",
