@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Image,
   Dimensions,
+  ScrollView,
 } from "react-native";
 import Modal from "react-native-modal";
 
@@ -37,63 +38,64 @@ const SideMenu = ({
       style={styles.modal}
     >
       <View style={styles.sideMenuWrapper}>
-        <TouchableOpacity style={{ alignItems: "center" }}>
-          <Image
-            source={require("@/assets/images/userprofile-icon.png")}
-            style={styles.icon}
-          />
-        </TouchableOpacity>
-
-        <View style={styles.menuItemsWrapper}>
-          <Text style={styles.menuTitle}>Profile</Text>
-          <View style={styles.divider} />
-
-          <TouchableOpacity
-            style={styles.menuItems}
-            onPress={() => handleItemClick(MENU_ITEMS.PROFILE)}
-          >
-            <Icon name="user" size={20} color="black" type="font-awesome" />
-            <Text>Personal Information</Text>
-          </TouchableOpacity>
-          <View style={styles.menuItemsDivider} />
-
-          <TouchableOpacity
-            style={styles.menuItems}
-            onPress={() => handleItemClick(MENU_ITEMS.PAYMENT)}
-          >
-            <Icon
-              name="credit-card"
-              size={15}
-              color="black"
-              type="font-awesome"
+        <ScrollView>
+          <TouchableOpacity style={{ alignItems: "center" }}>
+            <Image
+              source={require("@/assets/images/userprofile-icon.png")}
+              style={styles.icon}
             />
-            <Text>Payment & Subscriptions</Text>
           </TouchableOpacity>
-          <View style={styles.menuItemsDivider} />
 
-          <TouchableOpacity
-            style={styles.menuItems}
-            onPress={() => handleItemClick(MENU_ITEMS.SETTINGS)}
-          >
-            <Icon name="cog" size={20} color="black" type="font-awesome" />
-            <Text>Settings</Text>
-          </TouchableOpacity>
-          <View style={styles.menuItemsDivider} />
+          <View style={styles.menuItemsWrapper}>
+            <Text style={styles.menuTitle}>Profile</Text>
+            <View style={styles.divider} />
 
-          <TouchableOpacity
-            style={styles.menuItems}
-            onPress={() => handleItemClick(MENU_ITEMS.HELP)}
-          >
-            <Icon
-              name="question-circle"
-              size={20}
-              color="black"
-              type="font-awesome"
-            />
-            <Text>Help & Support</Text>
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity
+              style={styles.menuItems}
+              onPress={() => handleItemClick(MENU_ITEMS.PROFILE)}
+            >
+              <Icon name="user" size={20} color="black" type="font-awesome" />
+              <Text>Personal Information</Text>
+            </TouchableOpacity>
+            <View style={styles.menuItemsDivider} />
 
+            <TouchableOpacity
+              style={styles.menuItems}
+              onPress={() => handleItemClick(MENU_ITEMS.PAYMENT)}
+            >
+              <Icon
+                name="credit-card"
+                size={15}
+                color="black"
+                type="font-awesome"
+              />
+              <Text>Payment & Subscriptions</Text>
+            </TouchableOpacity>
+            <View style={styles.menuItemsDivider} />
+
+            <TouchableOpacity
+              style={styles.menuItems}
+              onPress={() => handleItemClick(MENU_ITEMS.SETTINGS)}
+            >
+              <Icon name="cog" size={20} color="black" type="font-awesome" />
+              <Text>Settings</Text>
+            </TouchableOpacity>
+            <View style={styles.menuItemsDivider} />
+
+            <TouchableOpacity
+              style={styles.menuItems}
+              onPress={() => handleItemClick(MENU_ITEMS.HELP)}
+            >
+              <Icon
+                name="question-circle"
+                size={20}
+                color="black"
+                type="font-awesome"
+              />
+              <Text>Help & Support</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
         {/* Footer Buttons */}
         <View style={styles.footerButtons}>
           <TouchableOpacity
@@ -118,11 +120,10 @@ const styles = StyleSheet.create({
     height: "100%",
     backgroundColor: "white",
     padding: 20,
-    flexDirection: "column",
-    justifyContent: "space-between",
   },
   menuItemsWrapper: {
-    flex: 1,
+    flexGrow: 1,
+    flexDirection: "column",
     marginTop: 20,
   },
   menuTitle: {
@@ -150,17 +151,8 @@ const styles = StyleSheet.create({
   },
   footerButtons: {
     alignItems: "center",
+    justifyContent: "flex-end",
     paddingBottom: 20,
-  },
-  closeButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  closeText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "red",
   },
   logoutButton: {
     marginTop: 15,

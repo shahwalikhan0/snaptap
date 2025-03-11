@@ -1,17 +1,16 @@
 import {
   View,
   Text,
-  Button,
   StyleSheet,
   TouchableOpacity,
   Linking,
   Platform,
+  Animated,
   Alert,
-  ScrollView,
 } from "react-native";
 import { WebView } from "react-native-webview";
 import * as WebBrowser from "expo-web-browser";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 const ProductView = () => {
   const glbModelUrl =
@@ -21,16 +20,23 @@ const ProductView = () => {
   const productWebsite = "https://example.com/product";
   const [showWebView, setShowWebView] = useState(false);
 
+  const scrollY = useRef(new Animated.Value(0)).current;
+
+  // Interpolate the WebView height
+  const webViewHeight = scrollY.interpolate({
+    inputRange: [0, 300], // Scroll range
+    outputRange: ["80%", "40%"], // Start large, shrink as user scrolls
+    extrapolate: "clamp",
+  });
+
   // Open AR based on platform
   const openAR = async () => {
-    console.log("Here");
     if (Platform.OS === "ios") {
       await WebBrowser.openBrowserAsync(usdzModelUrl);
     } else if (Platform.OS === "android") {
       setShowWebView(true);
     } else {
       Alert.alert("Device does not support AR.");
-      console.log("Device does not support AR.");
     }
   };
 
@@ -68,13 +74,20 @@ const ProductView = () => {
 
   return (
     <View style={styles.container}>
-      {/* WebView for Model */}
-      <View style={styles.modelContainer}>
+      {/* Animated WebView */}
+      <Animated.View style={[styles.modelContainer, { height: webViewHeight }]}>
         <WebView source={{ html: modelHtml }} style={styles.webView} />
-      </View>
+      </Animated.View>
 
-      {/* Product Description */}
-      <View style={styles.detailsContainer}>
+      {/* Scrollable Product Details */}
+      <Animated.ScrollView
+        contentContainerStyle={styles.detailsContainer}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false }
+        )}
+        scrollEventThrottle={16}
+      >
         <Text style={styles.title}>Astronaut Model</Text>
         <Text style={styles.description}>
           This is a high-quality astronaut 3D model with AR support. Perfect for
@@ -92,13 +105,41 @@ const ProductView = () => {
         >
           <Text style={styles.buttonText}>🌐 Visit Website</Text>
         </TouchableOpacity>
+        <Text style={styles.title}>Astronaut Model</Text>
+        <Text style={styles.description}>
+          This is a high-quality astronaut 3D model with AR support. Perfect for
+          space enthusiasts and educational purposes.
+        </Text>
 
-        {showWebView && (
-          <View style={styles.modelContainer}>
-            <WebView source={{ html: modelHtml }} style={styles.webView} />
-          </View>
-        )}
-      </View>
+        {/* Buttons */}
+        <TouchableOpacity style={styles.button} onPress={openAR}>
+          <Text style={styles.buttonText}>🔍 View in AR</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => Linking.openURL(productWebsite)}
+        >
+          <Text style={styles.buttonText}>🌐 Visit Website</Text>
+        </TouchableOpacity>
+        <Text style={styles.title}>Astronaut Model</Text>
+        <Text style={styles.description}>
+          This is a high-quality astronaut 3D model with AR support. Perfect for
+          space enthusiasts and educational purposes.
+        </Text>
+
+        {/* Buttons */}
+        <TouchableOpacity style={styles.button} onPress={openAR}>
+          <Text style={styles.buttonText}>🔍 View in AR</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => Linking.openURL(productWebsite)}
+        >
+          <Text style={styles.buttonText}>🌐 Visit Website</Text>
+        </TouchableOpacity>
+      </Animated.ScrollView>
     </View>
   );
 };
@@ -111,7 +152,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
   },
   modelContainer: {
-    height: "60%",
+    width: "100%",
     backgroundColor: "#000",
   },
   webView: {
