@@ -20,7 +20,7 @@ const Home: React.FC = () => {
 
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {[...Array(5)].map((_, i) => (
-                <Card key={i} />
+                <Card key={i} width={150} />
               ))}
 
               <TouchableOpacity style={styles.showMore}>

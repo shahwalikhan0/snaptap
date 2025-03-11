@@ -4,4 +4,5 @@ export const MENU_ITEMS = {
   SETTINGS: "Settings",
   PAYMENT: "Payment",
   HELP: "Help",
+  FAVOURITES: "Favourites",
 };
