@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, StyleSheet, SafeAreaView } from "react-native";
-import { useColorScheme } from "react-native";
-import { Link } from "expo-router";
+import { SafeAreaView, StyleSheet, ScrollView } from "react-native";
 import HomeHeader from "./components/HomeHeader";
 import SideMenu from "./components/LeftMenu";
 import Home from "./home";
 import ModelViewer from "./components/ModelViewer";
 import { UserDataType } from "./types/user-data";
+import ProfileScreen from "./ProfileScreen";
+import { MENU_ITEMS } from "./constants/menu-items";
+import PaymentsScreen from "./PaymentsScreen";
+import SettingsScreen from "./SettingsScreen";
+import HelpScreen from "./HelpScreen";
 
 const tempUserData: UserDataType = {
   name: "Shah",
@@ -15,28 +18,36 @@ const tempUserData: UserDataType = {
 
 export default function Index() {
   const [menuVisible, setMenuVisible] = useState<boolean>(false);
-  const [selectedItem, setSelectedItem] = useState<string>("home");
-  const [userData, setUserData] = useState<UserDataType>(tempUserData);
-  const colorScheme = useColorScheme();
+  const [selectedItem, setSelectedItem] = useState<string>(MENU_ITEMS.HOME);
 
-  const handleShowMenu = () => {
-    setMenuVisible(!menuVisible);
+  const handleShowMenu = () => setMenuVisible(true);
+
+  const handleHideMenu = () => setMenuVisible(false);
+
+  const renderSelectedPage = () => {
+    switch (selectedItem) {
+      case MENU_ITEMS.PROFILE:
+        return <ProfileScreen />;
+      case MENU_ITEMS.PAYMENT:
+        return <PaymentsScreen />;
+      case MENU_ITEMS.SETTINGS:
+        return <SettingsScreen navigation={null} />;
+      case MENU_ITEMS.HELP:
+        return <HelpScreen navigation={null} />;
+      default:
+        return <Home />;
+    }
   };
-  useEffect(() => {
-    console.log("selectedItem", selectedItem);
-  }, [selectedItem]);
+
   return (
     <SafeAreaView style={styles.container}>
-      {/* Fixed Header */}
-      <HomeHeader openMenu={handleShowMenu} />
-      <Home />
-      {/* Side Menu */}
       <SideMenu
         isVisible={menuVisible}
-        // closeMenu={() => setMenuVisible(false)}
-        closeMenu={handleShowMenu}
+        closeMenu={handleHideMenu}
         setSelectedItem={setSelectedItem}
       />
+      <HomeHeader openMenu={handleShowMenu} setSelectedItem={setSelectedItem} />
+      <ScrollView>{renderSelectedPage()}</ScrollView>
     </SafeAreaView>
   );
 }

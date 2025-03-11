@@ -2,9 +2,13 @@ import { Icon } from "@rneui/themed";
 import React from "react";
 // import { styles } from "@/app/assets/styles/home-header";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { MENU_ITEMS } from "../constants/menu-items";
 // import Icon from "react-native-vector-icons/FontAwesome";
 
-const HomeHeader: React.FC<{ openMenu: () => void }> = ({ openMenu }) => {
+const HomeHeader: React.FC<{
+  openMenu: () => void;
+  setSelectedItem: (item: string) => void;
+}> = ({ openMenu, setSelectedItem }) => {
   return (
     <View style={styles.header}>
       {/* Left: Open Menu */}
@@ -16,7 +20,12 @@ const HomeHeader: React.FC<{ openMenu: () => void }> = ({ openMenu }) => {
       </TouchableOpacity>
 
       {/* Center: Title */}
-      <Text style={styles.title}>SnapTap</Text>
+      <Text
+        style={styles.title}
+        onPress={() => setSelectedItem(MENU_ITEMS.HOME)}
+      >
+        SnapTap
+      </Text>
 
       {/* Right: Favorites Icon */}
       <TouchableOpacity

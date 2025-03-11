@@ -16,7 +16,6 @@ export default function RootLayout() {
         name="model-viewer"
         options={{ headerTitle: "3D Viewer" }}
       />
-      <Stack.Screen name="left-menu" options={{ headerTitle: "Menu" }} />
     </Stack>
   );
 }
