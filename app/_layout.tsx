@@ -24,6 +24,14 @@ export default function RootLayout() {
           headerShown: true,
         }}
       />
+      <Stack.Screen
+        name="pages/NotificationDetail"
+        options={{
+          headerBackTitle: "Back",
+          headerTitle: "Notification Detail",
+          headerShown: true,
+        }}
+      />
     </Stack>
   );
 }

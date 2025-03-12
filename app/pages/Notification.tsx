@@ -8,11 +8,13 @@ import {
   StyleSheet,
   SafeAreaView,
 } from "react-native";
+import { useRouter } from "expo-router";
 import { Divider, Icon } from "@rneui/themed";
 
 const notificationsData = [
   {
     id: "1",
+    sender: "Tassadaq",
     name: "Order Shipped",
     description: "Your order #1234 has been shipped!",
     image: require("@/assets/images/icon.png"),
@@ -20,6 +22,7 @@ const notificationsData = [
   },
   {
     id: "2",
+    sender: "Shah Wali",
     name: "New Offer",
     description: "Limited-time 50% discount on smartwatches!",
     image: require("@/assets/images/icon.png"),
@@ -27,6 +30,7 @@ const notificationsData = [
   },
   {
     id: "3",
+    sender: "Shah Wali",
     name: "Payment Received",
     description: "Payment of $199 received for Order #5678.",
     image: require("@/assets/images/icon.png"),
@@ -35,9 +39,9 @@ const notificationsData = [
 ];
 
 export default function NotificationsScreen() {
+  const router = useRouter();
   const [notifications, setNotifications] = useState(notificationsData);
 
-  // Mark notification as read
   const markAsRead = (id: string) => {
     setNotifications((prev) =>
       prev.map((notif) =>
@@ -56,18 +60,26 @@ export default function NotificationsScreen() {
     <View>
       <TouchableOpacity
         style={styles.notificationItem}
-        onPress={() => markAsRead(item.id)}
+        onPress={() => {
+          markAsRead(item.id);
+          router.push({
+            pathname: "/pages/NotificationDetail",
+            params: {
+              name: item.name,
+              description: item.description,
+              image: item.image,
+              sender: item.sender,
+            },
+          });
+        }}
       >
-        {/* Image */}
         <Image source={item.image} style={styles.notificationImage} />
 
-        {/* Name & Description */}
         <View style={styles.notificationText}>
           <Text style={styles.notificationName}>{item.name}</Text>
           <Text style={styles.notificationDescription}>{item.description}</Text>
         </View>
 
-        {/* Status Icon */}
         <Icon
           name={item.isRead ? "check-circle" : "circle"}
           type="font-awesome"
@@ -81,14 +93,12 @@ export default function NotificationsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Mark All as Read aligned to right */}
       <View style={styles.markAllContainer}>
         <TouchableOpacity onPress={markAllAsRead}>
           <Text style={styles.markAllRead}>Mark All as Read</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Notifications List */}
       <FlatList
         data={notifications}
         keyExtractor={(item) => item.id}
