@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "baseline",
     width: "100%",
-    marginVertical: 8,
+    marginVertical: 2,
     paddingHorizontal: 10,
   },
 
@@ -255,10 +255,10 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flex: 1,
     paddingHorizontal: 0,
+    top: -10,
   },
 
   inputContainer: {
-    borderWidth: 1,
     borderRadius: 10,
     borderColor: "lightgrey",
     borderBottomWidth: 1,
@@ -289,6 +289,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
+    minWidth: 200,
   },
   menuItem: {
     flexDirection: "row",
