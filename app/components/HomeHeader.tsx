@@ -1,14 +1,15 @@
 import { Icon } from "@rneui/themed";
 import React from "react";
-// import { styles } from "@/app/assets/styles/home-header";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { useRouter } from "expo-router";
 import { MENU_ITEMS } from "../constants/menu-items";
-// import Icon from "react-native-vector-icons/FontAwesome";
 
 const HomeHeader: React.FC<{
   openMenu: () => void;
   setSelectedItem: (item: string) => void;
 }> = ({ openMenu, setSelectedItem }) => {
+  const router = useRouter();
+
   return (
     <View style={styles.header}>
       {/* Left: Open Menu */}
@@ -27,15 +28,16 @@ const HomeHeader: React.FC<{
         SnapTap
       </Text>
 
-      {/* Right: Favorites Icon */}
+      {/* Right: Favorites & Notification Icons */}
       <TouchableOpacity
         onPress={() => console.log("Favorites clicked")}
         style={styles.iconButton}
       >
         <Icon name="heart" size={16} color="red" type="font-awesome" />
       </TouchableOpacity>
+
       <TouchableOpacity
-        onPress={() => console.log("Notification clicked")}
+        onPress={() => router.push("/pages/Notification")}
         style={styles.iconButton}
       >
         <Icon name="bell" size={16} color="black" type="font-awesome" />
@@ -43,6 +45,8 @@ const HomeHeader: React.FC<{
     </View>
   );
 };
+
+export default HomeHeader;
 
 const styles = StyleSheet.create({
   header: {
@@ -71,5 +75,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-
-export default HomeHeader;

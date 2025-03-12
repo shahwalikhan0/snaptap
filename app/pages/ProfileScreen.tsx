@@ -174,7 +174,6 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        {/* Edit Profile Button at Bottom */}
         <TouchableOpacity
           style={styles.editProfileButton}
           onPress={() => console.log("Edit Profile")}
@@ -236,16 +235,15 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   infoContainer: {
-    flexDirection: "row", // Align label and input horizontally
-    alignItems: "baseline", // Vertically center align items
+    flexDirection: "row",
+    alignItems: "baseline",
     width: "100%",
     marginVertical: 8,
     paddingHorizontal: 10,
-    // height: 30,
   },
 
   labelContainer: {
-    width: 100, // Fixed width for labels
+    width: 100,
   },
 
   label: {
@@ -260,12 +258,12 @@ const styles = StyleSheet.create({
   },
 
   inputContainer: {
-    borderWidth: 1, // Keep the border around the entire input
-    borderRadius: 10, // Keep the rounded corners
-    borderColor: "lightgrey", // Keep the border color
-    borderBottomWidth: 1, // Ensure the bottom border is visible
-    borderBottomColor: "lightgrey", // Set the color of the bottom border
-    paddingHorizontal: 5, // Add padding for better spacing
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: "lightgrey",
+    borderBottomWidth: 1,
+    borderBottomColor: "lightgrey",
+    paddingHorizontal: 5,
   },
 
   value: {
@@ -303,7 +301,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
 
-  // Edit Profile Button Styles
   editProfileButton: {
     backgroundColor: "#007bff",
     paddingVertical: 12,
@@ -311,8 +308,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 40,
-    // paddingBlockStart: 15,
-    // paddingBlockEnd: 15,
     marginLeft: 10,
     marginRight: 10,
   },

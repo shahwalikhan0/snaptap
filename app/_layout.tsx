@@ -9,12 +9,20 @@ export default function RootLayout() {
         options={{ headerTitle: "Product Details" }}
       />
       <Stack.Screen
-        name="components/ProductView"
+        name="pages/ProductView"
         options={{ headerTitle: "Product Details" }}
       />
       <Stack.Screen
         name="model-viewer"
         options={{ headerTitle: "3D Viewer" }}
+      />
+      <Stack.Screen
+        name="pages/Notification"
+        options={{
+          headerBackTitle: "Back",
+          headerTitle: "Notifications",
+          headerShown: true,
+        }}
       />
     </Stack>
   );
