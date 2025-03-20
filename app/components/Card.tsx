@@ -13,7 +13,7 @@ const Card = (width: { width: number }) => {
   const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
   const navigateToProductView = () => {
-    router.push("/components/ProductView");
+    router.push("/pages/ProductView");
   };
   return (
     <TouchableOpacity>
