@@ -9,7 +9,7 @@ import {
 import { useRouter } from "expo-router";
 import { Text } from "react-native";
 
-const Card = (width: { width: number }) => {
+const Card = (props: { width: number }) => {
   const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
   const navigateToProductView = () => {
@@ -23,7 +23,7 @@ const Card = (width: { width: number }) => {
         style={[
           styles.card,
           { backgroundColor: isHovered ? "darkgrey" : "lightgrey" },
-          { width: width.width },
+          { width: props.width },
         ]}
         onPress={navigateToProductView}
       >

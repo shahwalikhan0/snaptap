@@ -2,6 +2,7 @@ import React from "react";
 import { ScrollView, View, StyleSheet, TouchableOpacity } from "react-native";
 import { Text, Divider } from "@rneui/themed";
 import Card from "../components/Card";
+import { useRouter } from "expo-router";
 
 const sections = [
   { title: "Products" },
@@ -11,16 +12,22 @@ const sections = [
 ];
 
 const Home: React.FC = () => {
+  const router = useRouter();
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
         {sections.map((section, index) => (
           <View key={index}>
             <Text style={styles.heading}>{section.title}</Text>
-
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {[...Array(5)].map((_, i) => (
-                <Card key={i} width={150} />
+                <TouchableOpacity
+                  key={i}
+                  onPress={() => router.push("/pages/ProductView")}
+                >
+                  <Card width={150} />
+                </TouchableOpacity>
               ))}
 
               <TouchableOpacity style={styles.showMore}>

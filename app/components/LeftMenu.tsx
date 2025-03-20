@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Image,
   Dimensions,
+  ScrollView,
 } from "react-native";
 import Modal from "react-native-modal";
 
@@ -36,7 +37,7 @@ const SideMenu = ({
       useNativeDriver={true}
       style={styles.modal}
     >
-      <View style={styles.sideMenuWrapper}>
+      <ScrollView style={styles.sideMenuWrapper}>
         <TouchableOpacity style={{ alignItems: "center" }}>
           <Image
             source={require("@/assets/images/userprofile-icon.png")}
@@ -79,6 +80,14 @@ const SideMenu = ({
             <Text>Payment & Subscriptions</Text>
           </TouchableOpacity>
           <View style={styles.menuItemsDivider} />
+          <TouchableOpacity
+            style={styles.menuItems}
+            onPress={() => handleItemClick(MENU_ITEMS.FAVOURITES)}
+          >
+            <Icon name="heart" size={15} color="red" type="font-awesome" />
+            <Text>Favourites</Text>
+          </TouchableOpacity>
+          <View style={styles.menuItemsDivider} />
 
           <TouchableOpacity
             style={styles.menuItems}
@@ -102,7 +111,6 @@ const SideMenu = ({
             <Text>Help & Support</Text>
           </TouchableOpacity>
         </View>
-
         {/* Footer Buttons */}
         <View style={styles.footerButtons}>
           <TouchableOpacity
@@ -112,7 +120,7 @@ const SideMenu = ({
             <Text style={styles.logoutText}>Log Out</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     </Modal>
   );
 };
@@ -127,11 +135,10 @@ const styles = StyleSheet.create({
     height: "100%",
     backgroundColor: "white",
     padding: 20,
-    flexDirection: "column",
-    justifyContent: "space-between",
   },
   menuItemsWrapper: {
-    flex: 1,
+    flexGrow: 1,
+    flexDirection: "column",
     marginTop: 20,
   },
   menuTitle: {
@@ -159,17 +166,8 @@ const styles = StyleSheet.create({
   },
   footerButtons: {
     alignItems: "center",
+    justifyContent: "flex-end",
     paddingBottom: 20,
-  },
-  closeButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  closeText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "red",
   },
   logoutButton: {
     marginTop: 15,
