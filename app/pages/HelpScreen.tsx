@@ -1,6 +1,5 @@
 import React from "react";
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity } from "react-native";
-import HomeHeader from "../components/HomeHeader";
 
 export default function HelpSupportScreen({ navigation }: { navigation: any }) {
   const openMenu = () => {
@@ -9,13 +8,10 @@ export default function HelpSupportScreen({ navigation }: { navigation: any }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
-      {/* <HomeHeader title="Help & Support" onMenuPress={openMenu} /> */}
 
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.heading}>Help & Support</Text>
 
-        {/* FAQs Section */}
         <View style={styles.section}>
           <Text style={styles.subHeading}>Frequently Asked Questions</Text>
 
@@ -35,7 +31,6 @@ export default function HelpSupportScreen({ navigation }: { navigation: any }) {
           </Text>
         </View>
 
-        {/* Contact Support */}
         <View style={styles.section}>
           <Text style={styles.subHeading}>Need Further Assistance?</Text>
           <TouchableOpacity style={styles.button}>
