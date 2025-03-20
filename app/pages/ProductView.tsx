@@ -13,19 +13,19 @@ import * as WebBrowser from "expo-web-browser";
 import React, { useRef, useState } from "react";
 
 const ProductView = () => {
-  const glbModelUrl =
-    "https://modelviewer.dev/shared-assets/models/Astronaut.glb";
-  const usdzModelUrl =
-    "https://modelviewer.dev/shared-assets/models/Astronaut.usdz";
+  // const modelViewUrl = "https://192.168.100.234:8002/abc.glb";
+  // const glbModelUrl = "https://192.168.100.234:8003/abc.glb";
+  // const usdzModelUrl = "http://192.168.100.234:8003/abc.glb";
+  const modelViewUrl = "https://192.168.18.188:8002/abc.glb";
+  const glbModelUrl = "http://192.168.18.188:8003/abc.glb";
+  const usdzModelUrl = "http://192.168.18.188:8003/abc.glb";
   const productWebsite = "https://example.com/product";
-  const [showWebView, setShowWebView] = useState(false);
-
   const scrollY = useRef(new Animated.Value(0)).current;
 
   // Interpolate the WebView height
   const webViewHeight = scrollY.interpolate({
-    inputRange: [0, 300], // Scroll range
-    outputRange: ["80%", "40%"], // Start large, shrink as user scrolls
+    inputRange: [0, 300],
+    outputRange: ["80%", "40%"],
     extrapolate: "clamp",
   });
 
@@ -34,7 +34,7 @@ const ProductView = () => {
     if (Platform.OS === "ios") {
       await WebBrowser.openBrowserAsync(usdzModelUrl);
     } else if (Platform.OS === "android") {
-      setShowWebView(true);
+      Linking.openURL(glbModelUrl);
     } else {
       Alert.alert("Device does not support AR.");
     }
@@ -62,8 +62,7 @@ const ProductView = () => {
       <body>
         <div class="title-overlay">Astronaut Model</div>
         <model-viewer 
-          src="${glbModelUrl}" 
-          ios-src="${usdzModelUrl}" 
+          src="${modelViewUrl}" 
           ar ar-modes="scene-viewer webxr quick-look"
           camera-controls auto-rotate 
           style="width: 100vw; height: 80vh;">
@@ -74,7 +73,7 @@ const ProductView = () => {
 
   return (
     <View style={styles.container}>
-      {/* Animated WebView */}
+      {/* Directly load the model URL in WebView */}
       <Animated.View style={[styles.modelContainer, { height: webViewHeight }]}>
         <WebView source={{ html: modelHtml }} style={styles.webView} />
       </Animated.View>
@@ -88,40 +87,6 @@ const ProductView = () => {
         )}
         scrollEventThrottle={16}
       >
-        <Text style={styles.title}>Astronaut Model</Text>
-        <Text style={styles.description}>
-          This is a high-quality astronaut 3D model with AR support. Perfect for
-          space enthusiasts and educational purposes.
-        </Text>
-
-        {/* Buttons */}
-        <TouchableOpacity style={styles.button} onPress={openAR}>
-          <Text style={styles.buttonText}>🔍 View in AR</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => Linking.openURL(productWebsite)}
-        >
-          <Text style={styles.buttonText}>🌐 Visit Website</Text>
-        </TouchableOpacity>
-        <Text style={styles.title}>Astronaut Model</Text>
-        <Text style={styles.description}>
-          This is a high-quality astronaut 3D model with AR support. Perfect for
-          space enthusiasts and educational purposes.
-        </Text>
-
-        {/* Buttons */}
-        <TouchableOpacity style={styles.button} onPress={openAR}>
-          <Text style={styles.buttonText}>🔍 View in AR</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => Linking.openURL(productWebsite)}
-        >
-          <Text style={styles.buttonText}>🌐 Visit Website</Text>
-        </TouchableOpacity>
         <Text style={styles.title}>Astronaut Model</Text>
         <Text style={styles.description}>
           This is a high-quality astronaut 3D model with AR support. Perfect for
