@@ -20,14 +20,13 @@ const Home: React.FC = () => {
         {sections.map((section, index) => (
           <View key={index}>
             <Text style={styles.heading}>{section.title}</Text>
-
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {[...Array(5)].map((_, i) => (
                 <TouchableOpacity
                   key={i}
                   onPress={() => router.push("/pages/ProductView")}
                 >
-                  <Card />
+                  <Card width={150} />
                 </TouchableOpacity>
               ))}
 

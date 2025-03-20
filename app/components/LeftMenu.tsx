@@ -37,65 +37,71 @@ const SideMenu = ({
       useNativeDriver={true}
       style={styles.modal}
     >
-      <View style={styles.sideMenuWrapper}>
-        <ScrollView>
-          <TouchableOpacity style={{ alignItems: "center" }}>
-            <Image
-              source={require("@/assets/images/userprofile-icon.png")}
-              style={styles.icon}
-            />
+      <ScrollView style={styles.sideMenuWrapper}>
+        <TouchableOpacity style={{ alignItems: "center" }}>
+          <Image
+            source={require("@/assets/images/userprofile-icon.png")}
+            style={styles.icon}
+          />
+        </TouchableOpacity>
+
+        <View style={styles.menuItemsWrapper}>
+          <Text style={styles.menuTitle}>Profile</Text>
+          <View style={styles.divider} />
+
+          <TouchableOpacity
+            style={styles.menuItems}
+            onPress={() => handleItemClick(MENU_ITEMS.PROFILE)}
+          >
+            <Icon name="user" size={20} color="black" type="font-awesome" />
+            <Text>Personal Information</Text>
           </TouchableOpacity>
+          <View style={styles.menuItemsDivider} />
 
-          <View style={styles.menuItemsWrapper}>
-            <Text style={styles.menuTitle}>Profile</Text>
-            <View style={styles.divider} />
+          <TouchableOpacity
+            style={styles.menuItems}
+            onPress={() => handleItemClick(MENU_ITEMS.PAYMENT)}
+          >
+            <Icon
+              name="credit-card"
+              size={15}
+              color="black"
+              type="font-awesome"
+            />
+            <Text>Payment & Subscriptions</Text>
+          </TouchableOpacity>
+          <View style={styles.menuItemsDivider} />
+          <TouchableOpacity
+            style={styles.menuItems}
+            onPress={() => handleItemClick(MENU_ITEMS.FAVOURITES)}
+          >
+            <Icon name="heart" size={15} color="red" type="font-awesome" />
+            <Text>Favourites</Text>
+          </TouchableOpacity>
+          <View style={styles.menuItemsDivider} />
 
-            <TouchableOpacity
-              style={styles.menuItems}
-              onPress={() => handleItemClick(MENU_ITEMS.PROFILE)}
-            >
-              <Icon name="user" size={20} color="black" type="font-awesome" />
-              <Text>Personal Information</Text>
-            </TouchableOpacity>
-            <View style={styles.menuItemsDivider} />
+          <TouchableOpacity
+            style={styles.menuItems}
+            onPress={() => handleItemClick(MENU_ITEMS.SETTINGS)}
+          >
+            <Icon name="cog" size={20} color="black" type="font-awesome" />
+            <Text>Settings</Text>
+          </TouchableOpacity>
+          <View style={styles.menuItemsDivider} />
 
-            <TouchableOpacity
-              style={styles.menuItems}
-              onPress={() => handleItemClick(MENU_ITEMS.PAYMENT)}
-            >
-              <Icon
-                name="credit-card"
-                size={15}
-                color="black"
-                type="font-awesome"
-              />
-              <Text>Payment & Subscriptions</Text>
-            </TouchableOpacity>
-            <View style={styles.menuItemsDivider} />
-
-            <TouchableOpacity
-              style={styles.menuItems}
-              onPress={() => handleItemClick(MENU_ITEMS.SETTINGS)}
-            >
-              <Icon name="cog" size={20} color="black" type="font-awesome" />
-              <Text>Settings</Text>
-            </TouchableOpacity>
-            <View style={styles.menuItemsDivider} />
-
-            <TouchableOpacity
-              style={styles.menuItems}
-              onPress={() => handleItemClick(MENU_ITEMS.HELP)}
-            >
-              <Icon
-                name="question-circle"
-                size={20}
-                color="black"
-                type="font-awesome"
-              />
-              <Text>Help & Support</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
+          <TouchableOpacity
+            style={styles.menuItems}
+            onPress={() => handleItemClick(MENU_ITEMS.HELP)}
+          >
+            <Icon
+              name="question-circle"
+              size={20}
+              color="black"
+              type="font-awesome"
+            />
+            <Text>Help & Support</Text>
+          </TouchableOpacity>
+        </View>
         {/* Footer Buttons */}
         <View style={styles.footerButtons}>
           <TouchableOpacity
@@ -105,7 +111,7 @@ const SideMenu = ({
             <Text style={styles.logoutText}>Log Out</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     </Modal>
   );
 };

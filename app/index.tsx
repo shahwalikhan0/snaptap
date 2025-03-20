@@ -9,6 +9,8 @@ import { MENU_ITEMS } from "./constants/menu-items";
 import PaymentsScreen from "./pages/PaymentsScreen";
 import SettingsScreen from "./pages/SettingsScreen";
 import HelpScreen from "./pages/HelpScreen";
+import Favourites from "./pages/Favourites";
+import FavouritesScreen from "./pages/Favourites";
 
 const tempUserData: UserDataType = {
   name: "Shah",
@@ -29,6 +31,8 @@ export default function Index() {
         return <ProfileScreen />;
       case MENU_ITEMS.PAYMENT:
         return <PaymentsScreen />;
+      case MENU_ITEMS.FAVOURITES:
+        return <FavouritesScreen />;
       case MENU_ITEMS.SETTINGS:
         return <SettingsScreen navigation={null} />;
       case MENU_ITEMS.HELP:
