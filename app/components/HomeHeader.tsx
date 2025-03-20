@@ -30,10 +30,10 @@ const HomeHeader: React.FC<{
 
       {/* Right: Favorites & Notification Icons */}
       <TouchableOpacity
-        onPress={() => console.log("Favorites clicked")}
+        onPress={() => console.log("Searchbar clicked")}
         style={styles.iconButton}
       >
-        <Icon name="heart" size={16} color="red" type="font-awesome" />
+        <Icon name="search" size={16} color="black" type="font-awesome" />
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -63,8 +63,8 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   icon: {
-    width: 32,
-    height: 32,
+    width: 40,
+    height: 40,
     resizeMode: "contain",
     borderRadius: 12,
   },

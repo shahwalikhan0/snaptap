@@ -9,7 +9,7 @@ import {
 import { useRouter } from "expo-router";
 import { Text } from "react-native";
 
-const Card: React.FC = () => {
+const Card = (width: { width: number }) => {
   const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
   const navigateToProductView = () => {
@@ -23,6 +23,7 @@ const Card: React.FC = () => {
         style={[
           styles.card,
           { backgroundColor: isHovered ? "darkgrey" : "lightgrey" },
+          { width: width.width },
         ]}
         onPress={navigateToProductView}
       >
@@ -49,7 +50,6 @@ export default Card;
 
 const styles = StyleSheet.create({
   card: {
-    width: 150,
     height: 200,
     backgroundColor: "#ddd",
     borderRadius: 10,

@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity } from "react-native";
 
+
 export default function HelpSupportScreen({ navigation }: { navigation: any }) {
   const openMenu = () => {
     navigation.openDrawer?.();
