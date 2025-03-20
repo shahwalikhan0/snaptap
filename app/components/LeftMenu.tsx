@@ -59,6 +59,15 @@ const SideMenu = ({
 
           <TouchableOpacity
             style={styles.menuItems}
+            onPress={() => handleItemClick(MENU_ITEMS.FAVOURITES)}
+          >
+            <Icon name="heart" size={15} color="red" type="font-awesome" />
+            <Text>Favourites</Text>
+          </TouchableOpacity>
+          <View style={styles.menuItemsDivider} />
+
+          <TouchableOpacity
+            style={styles.menuItems}
             onPress={() => handleItemClick(MENU_ITEMS.PAYMENT)}
           >
             <Icon
