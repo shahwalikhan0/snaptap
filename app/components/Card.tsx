@@ -9,11 +9,27 @@ import {
 import { useRouter } from "expo-router";
 import { Text } from "react-native";
 
-const Card = (props: { width: number }) => {
+type Data = {
+  modelName: string;
+  productName: string;
+  productId: string;
+};
+
+const Card = (props: { width: number; data: Data }) => {
+  console.log(props.data);
   const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
   const navigateToProductView = () => {
-    router.push("/pages/ProductView");
+    const item = props.data;
+    router.push({
+      pathname: "/pages/ProductView",
+      params: {
+        modelName: item.modelName,
+        // description: item.description,
+        // image: item.image,
+        // sender: item.sender,
+      },
+    });
   };
   return (
     <TouchableOpacity>
@@ -38,7 +54,7 @@ const Card = (props: { width: number }) => {
               { color: isHovered ? "lightblue" : "white" },
             ]}
           >
-            {isHovered ? "View Details" : "Product Name"}
+            {isHovered ? "View Details" : props.data.modelName}
           </Text>
         </View>
       </Pressable>

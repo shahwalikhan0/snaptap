@@ -11,14 +11,14 @@ import {
 import { WebView } from "react-native-webview";
 import * as WebBrowser from "expo-web-browser";
 import React, { useRef, useState } from "react";
+import { useLocalSearchParams } from "expo-router";
 
 const ProductView = () => {
-  // const modelViewUrl = "https://192.168.100.234:8002/abc.glb";
-  // const glbModelUrl = "https://192.168.100.234:8003/abc.glb";
-  // const usdzModelUrl = "http://192.168.100.234:8003/abc.glb";
-  const modelViewUrl = "https://192.168.18.188:8002/abc.glb";
-  const glbModelUrl = "http://192.168.18.188:8003/abc.glb";
-  const usdzModelUrl = "http://192.168.18.188:8003/abc.glb";
+  const ip = "172.20.10.6";
+  const { modelName } = useLocalSearchParams();
+  const modelViewUrl = `https://${ip}:8002/${modelName}.glb`;
+  const glbModelUrl = `http://${ip}:8003/${modelName}.glb`;
+  const usdzModelUrl = `http://${ip}:8003/${modelName}.glb`;
   const productWebsite = "https://example.com/product";
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -87,7 +87,7 @@ const ProductView = () => {
         )}
         scrollEventThrottle={16}
       >
-        <Text style={styles.title}>Astronaut Model</Text>
+        <Text style={styles.title}>{modelName}</Text>
         <Text style={styles.description}>
           This is a high-quality astronaut 3D model with AR support. Perfect for
           space enthusiasts and educational purposes.

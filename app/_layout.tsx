@@ -8,11 +8,12 @@ export default function RootLayout() {
         name="product-view"
         options={{ headerTitle: "Product Details" }}
       />
+      <Stack.Screen name="pages/Home" options={{ headerTitle: "SnapTap" }} />
       <Stack.Screen
         name="pages/ProductView"
         options={{
           headerShown: true,
-          headerTitle: "Product Details",
+          headerTitle: "Product View",
           headerBackTitle: "Back",
         }}
       />

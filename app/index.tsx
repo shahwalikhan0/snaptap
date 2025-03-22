@@ -3,19 +3,12 @@ import { SafeAreaView, StyleSheet, ScrollView } from "react-native";
 import HomeHeader from "./components/HomeHeader";
 import SideMenu from "./components/LeftMenu";
 import Home from "./pages/Home";
-import { UserDataType } from "./types/user-data";
 import ProfileScreen from "./pages/ProfileScreen";
 import { MENU_ITEMS } from "./constants/menu-items";
 import PaymentsScreen from "./pages/PaymentsScreen";
 import SettingsScreen from "./pages/SettingsScreen";
 import HelpScreen from "./pages/HelpScreen";
-import Favourites from "./pages/Favourites";
 import FavouritesScreen from "./pages/Favourites";
-
-const tempUserData: UserDataType = {
-  name: "Shah",
-  email: "ss",
-};
 
 export default function Index() {
   const [menuVisible, setMenuVisible] = useState<boolean>(false);
