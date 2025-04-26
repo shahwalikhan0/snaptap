@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { SafeAreaView, StyleSheet, ScrollView } from "react-native";
 import HomeHeader from "./components/HomeHeader";
 import SideMenu from "./components/LeftMenu";
-import Home from "./pages/home";
+import MainHome from "./pages/MainHome";
 import ProfileScreen from "./pages/ProfileScreen";
 import { MENU_ITEMS } from "./constants/menu-items";
 import PaymentsScreen from "./pages/PaymentsScreen";
@@ -31,7 +31,7 @@ export default function Index() {
       case MENU_ITEMS.HELP:
         return <HelpScreen navigation={null} />;
       default:
-        return <Home />;
+        return <MainHome />;
     }
   };
 

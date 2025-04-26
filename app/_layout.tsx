@@ -4,11 +4,14 @@ export default function RootLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       {/* <Stack.Screen name="pages/Home" options={{ headerTitle: "SnapTap" }} /> */}
-      <Stack.Screen
+      {/* <Stack.Screen
         name="product-view"
         options={{ headerTitle: "Product Details" }}
+      /> */}
+      <Stack.Screen
+        name="pages/MainHome"
+        options={{ headerTitle: "SnapTap" }}
       />
-      <Stack.Screen name="pages/Home" options={{ headerTitle: "SnapTap" }} />
       <Stack.Screen
         name="pages/ProductView"
         options={{
@@ -17,10 +20,10 @@ export default function RootLayout() {
           headerBackTitle: "Back",
         }}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="model-viewer"
         options={{ headerTitle: "3D Viewer" }}
-      />
+      /> */}
       <Stack.Screen
         name="pages/Notification"
         options={{

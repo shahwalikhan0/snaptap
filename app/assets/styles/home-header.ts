@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 
 //to do remove this
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -28,3 +28,5 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
+export default styles;

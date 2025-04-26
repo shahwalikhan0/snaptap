@@ -17,32 +17,32 @@ type Data = {
   productId: string;
 };
 
-const Home: React.FC = () => {
+const MainHome: React.FC = () => {
   const router = useRouter();
   const [modelData, setModelData] = useState<Data[]>([]); // State to store model data
   const [loading, setLoading] = useState(true); // State to track loading status
   const [error, setError] = useState<string>(); // State to track errors
 
   // Fetch model data from the server
-  useEffect(() => {
-    const fetchModelData = async () => {
-      try {
-        const response = await fetch("https://172.20.10.6:8002/modelData");
-        if (!response.ok) {
-          throw new Error("Failed to fetch model data");
-        }
-        const data = await response.json();
-        setModelData(data);
-      } catch (error) {
-        console.error("Error fetching model data:", error);
-        setError("Failed");
-      } finally {
-        setLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchModelData = async () => {
+  //     try {
+  //       const response = await fetch("https://172.20.10.6:8002/modelData");
+  //       if (!response.ok) {
+  //         throw new Error("Failed to fetch model data");
+  //       }
+  //       const data = await response.json();
+  //       setModelData(data);
+  //     } catch (error) {
+  //       console.error("Error fetching model data:", error);
+  //       setError("Failed");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchModelData();
-  }, []);
+  //   fetchModelData();
+  // }, []);
 
   // if (loading) {
   //   return (
@@ -114,4 +114,4 @@ const styles = StyleSheet.create({
   divider: { marginVertical: 15 },
 });
 
-export default Home;
+export default MainHome;

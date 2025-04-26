@@ -28,25 +28,25 @@ export default function ProfileScreen() {
 
   const menuOpacity = useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch("https://your-api.com/user");
-        if (!response.ok) {
-          throw new Error("Failed to fetch user data");
-        }
-        const data = await response.json();
-        setUser(data);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        setUser(defaultUser);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     try {
+  //       const response = await fetch("https://your-api.com/user");
+  //       if (!response.ok) {
+  //         throw new Error("Failed to fetch user data");
+  //       }
+  //       const data = await response.json();
+  //       setUser(data);
+  //     } catch (error) {
+  //       console.error("Error fetching user data:", error);
+  //       setUser(defaultUser);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchUserData();
-  }, []);
+  //   fetchUserData();
+  // }, []);
 
   const toggleMenu = () => {
     setMenuVisible(!menuVisible);
