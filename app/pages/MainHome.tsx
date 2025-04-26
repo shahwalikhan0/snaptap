@@ -1,8 +1,11 @@
+import "axios";
 import React, { useEffect, useState } from "react";
 import { ScrollView, View, StyleSheet, TouchableOpacity } from "react-native";
 import { Text, Divider } from "@rneui/themed";
 import Card from "../components/Card";
 import { useRouter } from "expo-router";
+import { DB_BASE_URL } from "@env";
+import axios from "axios";
 
 const sections = [
   { title: "Products" },
@@ -12,6 +15,8 @@ const sections = [
 ];
 
 type Data = {
+  name: string;
+  model_url: string;
   modelName: string;
   productName: string;
   productId: string;
@@ -23,27 +28,40 @@ const MainHome: React.FC = () => {
   const [loading, setLoading] = useState(true); // State to track loading status
   const [error, setError] = useState<string>(); // State to track errors
 
-  // Fetch model data from the server
-  // useEffect(() => {
-  //   const fetchModelData = async () => {
-  //     try {
-  //       const response = await fetch("https://172.20.10.6:8002/modelData");
-  //       if (!response.ok) {
-  //         throw new Error("Failed to fetch model data");
-  //       }
-  //       const data = await response.json();
-  //       setModelData(data);
-  //     } catch (error) {
-  //       console.error("Error fetching model data:", error);
-  //       setError("Failed");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+  const fetchProducts = async () => {
+    try {
+      const fullUrl = `${DB_BASE_URL}/api/products`;
+      axios.get(fullUrl, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const response = await axios.get(fullUrl);
+      if (!response.data) {
+        throw new Error("No data found");
+      }
+      const data = response.data.map((item: any) => ({
+        name: item.name,
+        model_url: item.model_url,
+        modelName: item.modelName,
+        productName: item.productName,
+        productId: item.productId,
+      }));
+      if (data.length === 0) {
+        throw new Error("No products found");
+      }
+      setModelData(data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      setError("Failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  //   fetchModelData();
-  // }, []);
-
+  useEffect(() => {
+    fetchProducts();
+  }, []);
   // if (loading) {
   //   return (
   //     <View style={styles.container}>
@@ -52,17 +70,10 @@ const MainHome: React.FC = () => {
   //   );
   // }
 
-  // if (error) {
-  //   return (
-  //     <View style={styles.container}>
-  //       <Text style={styles.errorText}>Error: {error}</Text>
-  //     </View>
-  //   );
-  // }
-
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
+        <Text>{modelData[0]?.model_url}</Text>
         {sections.map((section, index) => (
           <View key={index}>
             <Text style={styles.heading}>{section.title}</Text>
