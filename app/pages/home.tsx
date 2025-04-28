@@ -5,6 +5,7 @@ import Card from "../components/Card";
 import { useRouter } from "expo-router";
 import { BASE_URL } from "../constants/urls";
 import { ProductType } from "../types/product-type";
+import { BrandData } from "../types/brand-data";
 
 const sections = [
   { title: "Products" },
@@ -24,12 +25,14 @@ const Home: React.FC = () => {
   const [products, setProducts] = useState<ProductType[]>([]); // State to store model data
   const [loading, setLoading] = useState(true); // State to track loading status
   const [error, setError] = useState<string>(); // State to track errors
+  const [brands, setBrands] = useState<BrandData[]>([]); // State to store model data
 
   // Fetch model data from the server
   useEffect(() => {
     const fetchModelData = async () => {
       try {
         const response = await fetch(`${BASE_URL}/api/products`);
+
         if (!response.ok) {
           throw new Error("Failed to fetch model data");
         }

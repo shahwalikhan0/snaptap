@@ -4,12 +4,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   Linking,
-  Platform,
   Animated,
+  Image,
   Alert,
 } from "react-native";
 import { WebView } from "react-native-webview";
-import * as WebBrowser from "expo-web-browser";
 import React, { useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { ProductType } from "../types/product-type";
@@ -17,32 +16,51 @@ import { ProductType } from "../types/product-type";
 const ProductView = () => {
   const ip = "172.20.10.6";
   const { product } = useLocalSearchParams();
-
   const parsedProduct: ProductType | null = product
     ? JSON.parse(Array.isArray(product) ? product[0] : product)
     : null;
   const productWebsite = "https://example.com/product";
-  const scrollY = useRef(new Animated.Value(0)).current;
 
-  console.log("ProductView", parsedProduct);
-  // Interpolate the WebView height
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [userRating, setUserRating] = useState(0);
+
+  const handleFavoritePress = () => {
+    setIsFavorite(!isFavorite);
+    Alert.alert(
+      "Success",
+      isFavorite ? "Removed from favorites" : "Added to favorites"
+    );
+  };
+
+  const handleStarPress = (rating: number) => {
+    setUserRating(rating);
+  };
+
   const webViewHeight = scrollY.interpolate({
     inputRange: [0, 300],
-    outputRange: ["80%", "40%"],
+    outputRange: [400, 200],
     extrapolate: "clamp",
   });
 
   return (
     <View style={styles.container}>
-      {/* Directly load the model URL in WebView */}
+      {/* Model Viewer */}
       <Animated.View style={[styles.modelContainer, { height: webViewHeight }]}>
         <WebView
           source={{ uri: `${parsedProduct?.model_url}` }}
           style={styles.webView}
         />
+        {/* Favorite Floating Button */}
+        <TouchableOpacity
+          style={styles.favoriteFloatingButton}
+          onPress={handleFavoritePress}
+        >
+          <Text style={{ fontSize: 24 }}>{isFavorite ? "❤️" : "🤍"}</Text>
+        </TouchableOpacity>
       </Animated.View>
 
-      {/* Scrollable Product Details */}
+      {/* Product Details */}
       <Animated.ScrollView
         contentContainerStyle={styles.detailsContainer}
         onScroll={Animated.event(
@@ -51,17 +69,74 @@ const ProductView = () => {
         )}
         scrollEventThrottle={16}
       >
-        <Text style={styles.title}>{parsedProduct?.name}</Text>
-        <Text style={styles.description}>
-          This is a high-quality astronaut 3D model with AR support. Perfect for
-          space enthusiasts and educational purposes.
-        </Text>
+        {/* Main Card */}
+        <View style={styles.card}>
+          <Text style={styles.title}>{parsedProduct?.name}</Text>
 
+          {/* Rating */}
+          <View style={styles.ratingContainer}>
+            <Text style={styles.ratingText}>⭐ 4.6</Text>
+            <Text style={styles.reviewText}>(10 reviews)</Text>
+          </View>
+
+          {/* Price */}
+          {parsedProduct?.price && (
+            <Text style={styles.price}>${parsedProduct.price.toFixed(2)}</Text>
+          )}
+
+          <View style={styles.divider} />
+
+          {/* Category */}
+          <Text style={styles.category}>
+            Category: {parsedProduct?.category}
+          </Text>
+        </View>
+
+        {/* Description Card */}
+        <View style={styles.descriptionCard}>
+          <Text style={styles.sectionTitle}>Description</Text>
+          <Text style={styles.descriptionText}>
+            {parsedProduct?.description}
+          </Text>
+        </View>
+
+        {/* Published By Card */}
+        <View style={styles.publisherCard}>
+          <Text style={styles.sectionTitle}>Published By</Text>
+          <Text style={styles.publisherName}>Natalie</Text>
+
+          {parsedProduct?.image_url && (
+            <Image
+              source={{ uri: parsedProduct.image_url }}
+              style={styles.publisherImage}
+              resizeMode="cover"
+            />
+          )}
+        </View>
+
+        {/* Rating Input */}
+        <View style={styles.ratingInputCard}>
+          <Text style={styles.sectionTitle}>Your Rating</Text>
+          <View style={styles.starsRow}>
+            {[1, 2, 3, 4, 5].map((star) => (
+              <TouchableOpacity
+                key={star}
+                onPress={() => handleStarPress(star)}
+              >
+                <Text style={{ fontSize: 30, marginHorizontal: 5 }}>
+                  {userRating >= star ? "⭐" : "☆"}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        {/* Visit Website Button */}
         <TouchableOpacity
-          style={styles.button}
+          style={styles.visitButton}
           onPress={() => Linking.openURL(productWebsite)}
         >
-          <Text style={styles.buttonText}>🌐 Visit Website</Text>
+          <Text style={styles.visitButtonText}>🌐 Visit Website</Text>
         </TouchableOpacity>
       </Animated.ScrollView>
     </View>
@@ -73,40 +148,159 @@ export default ProductView;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#e6f0fa",
   },
   modelContainer: {
     width: "100%",
     backgroundColor: "#000",
+    position: "relative",
   },
   webView: {
     flex: 1,
   },
+  favoriteFloatingButton: {
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+    backgroundColor: "#ffffff",
+    borderRadius: 25,
+    padding: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 6,
+  },
   detailsContainer: {
-    padding: 20,
+    padding: 16,
+  },
+  card: {
+    backgroundColor: "#ffffff",
+    borderRadius: 16,
+    padding: 18,
+    marginBottom: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 4,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
-    textAlign: "center",
+    textAlign: "left",
+    color: "#0077cc",
     marginBottom: 10,
   },
-  description: {
-    fontSize: 16,
-    textAlign: "center",
-    color: "#555",
-    marginBottom: 20,
-  },
-  button: {
-    backgroundColor: "#007AFF",
-    padding: 15,
-    borderRadius: 10,
+  ratingContainer: {
+    flexDirection: "row",
     alignItems: "center",
-    marginVertical: 10,
+    marginBottom: 8,
   },
-  buttonText: {
+  ratingText: {
+    fontSize: 18,
+    color: "#f5a623",
+    fontWeight: "600",
+    marginRight: 6,
+  },
+  reviewText: {
+    fontSize: 16,
+    color: "#7d7d7d",
+  },
+  price: {
+    fontSize: 26,
+    color: "#e63946",
+    fontWeight: "bold",
+    textAlign: "left",
+    marginVertical: 12,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#cce0f5",
+    marginVertical: 12,
+  },
+  category: {
+    fontSize: 16,
+    color: "#333",
+    textAlign: "left",
+    marginBottom: 8,
+  },
+  descriptionCard: {
+    backgroundColor: "#ffffff",
+    borderRadius: 16,
+    padding: 18,
+    marginBottom: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 5,
+    elevation: 4,
+  },
+  descriptionText: {
+    fontSize: 16,
+    color: "#555",
+    lineHeight: 22,
+    textAlign: "left",
+  },
+  publisherCard: {
+    backgroundColor: "#ffffff",
+    borderRadius: 16,
+    padding: 18,
+    marginBottom: 16,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 5,
+    elevation: 4,
+  },
+  publisherName: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#333",
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  publisherImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 12,
+    marginTop: 8,
+  },
+  ratingInputCard: {
+    backgroundColor: "#ffffff",
+    borderRadius: 16,
+    padding: 18,
+    marginBottom: 16,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 5,
+    elevation: 4,
+  },
+  starsRow: {
+    flexDirection: "row",
+    marginTop: 12,
+    justifyContent: "center",
+  },
+  sectionTitle: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#0077cc",
+    marginBottom: 10,
+    textAlign: "left", // fixed to left
+  },
+  visitButton: {
+    backgroundColor: "#0077cc",
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: "center",
+    marginBottom: 24,
+  },
+  visitButtonText: {
     color: "#fff",
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: "600",
   },
 });

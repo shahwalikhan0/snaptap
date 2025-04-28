@@ -1,6 +1,9 @@
 export type UserDataType = {
-  id?: number;
-  name: string;
-  email?: string;
-  avatar?: string;
+  id: number;
+  username: string;
+  email: string;
+  password_hash: string;
+  phone: string;
+  role: string;
+  created_at: string;
 };
