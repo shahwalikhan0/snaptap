@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { SafeAreaView, StyleSheet, ScrollView } from "react-native";
 import HomeHeader from "./components/HomeHeader";
 import SideMenu from "./components/LeftMenu";
-import Home from "./pages/Home";
+import Home from "./pages/home";
 import ProfileScreen from "./pages/ProfileScreen";
 import { MENU_ITEMS } from "./constants/menu-items";
 import PaymentsScreen from "./pages/PaymentsScreen";
