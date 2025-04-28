@@ -3,6 +3,8 @@ import { ScrollView, View, StyleSheet, TouchableOpacity } from "react-native";
 import { Text, Divider } from "@rneui/themed";
 import Card from "../components/Card";
 import { useRouter } from "expo-router";
+import { BASE_URL } from "../constants/urls";
+import { ProductType } from "../types/product-type";
 
 const sections = [
   { title: "Products" },
@@ -19,7 +21,7 @@ type Data = {
 
 const Home: React.FC = () => {
   const router = useRouter();
-  const [modelData, setModelData] = useState<Data[]>([]); // State to store model data
+  const [products, setProducts] = useState<ProductType[]>([]); // State to store model data
   const [loading, setLoading] = useState(true); // State to track loading status
   const [error, setError] = useState<string>(); // State to track errors
 
@@ -27,12 +29,13 @@ const Home: React.FC = () => {
   useEffect(() => {
     const fetchModelData = async () => {
       try {
-        const response = await fetch("https://172.20.10.6:8002/modelData");
+        const response = await fetch(`${BASE_URL}/api/products`);
         if (!response.ok) {
           throw new Error("Failed to fetch model data");
         }
         const data = await response.json();
-        setModelData(data);
+        console.log("Fetched model data:", data); // Log the fetched data
+        setProducts(data);
       } catch (error) {
         console.error("Error fetching model data:", error);
         setError("Failed");
@@ -67,18 +70,18 @@ const Home: React.FC = () => {
           <View key={index}>
             <Text style={styles.heading}>{section.title}</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {modelData &&
-                modelData.map((model: Data, i: number) => (
+              {products &&
+                products.map((product: ProductType, i: number) => (
                   <TouchableOpacity
                     key={i}
                     onPress={() =>
                       router.push({
                         pathname: "/pages/ProductView",
-                        params: { modelName: model.modelName }, // Pass modelName from the model object
+                        params: { product: JSON.stringify(product) },
                       })
                     }
                   >
-                    <Card data={model} width={150} />
+                    <Card data={product} width={150} />
                   </TouchableOpacity>
                 ))}
 

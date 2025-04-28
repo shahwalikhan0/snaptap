@@ -12,16 +12,19 @@ import { WebView } from "react-native-webview";
 import * as WebBrowser from "expo-web-browser";
 import React, { useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
+import { ProductType } from "../types/product-type";
 
 const ProductView = () => {
   const ip = "172.20.10.6";
-  const { modelName } = useLocalSearchParams();
-  const modelViewUrl = `https://${ip}:8002/${modelName}.glb`;
-  const glbModelUrl = `http://${ip}:8003/${modelName}.glb`;
-  const usdzModelUrl = `http://${ip}:8003/${modelName}.glb`;
+  const { product } = useLocalSearchParams();
+
+  const parsedProduct: ProductType | null = product
+    ? JSON.parse(Array.isArray(product) ? product[0] : product)
+    : null;
   const productWebsite = "https://example.com/product";
   const scrollY = useRef(new Animated.Value(0)).current;
 
+  console.log("ProductView", parsedProduct);
   // Interpolate the WebView height
   const webViewHeight = scrollY.interpolate({
     inputRange: [0, 300],
@@ -29,53 +32,14 @@ const ProductView = () => {
     extrapolate: "clamp",
   });
 
-  // Open AR based on platform
-  const openAR = async () => {
-    if (Platform.OS === "ios") {
-      await WebBrowser.openBrowserAsync(usdzModelUrl);
-    } else if (Platform.OS === "android") {
-      Linking.openURL(glbModelUrl);
-    } else {
-      Alert.alert("Device does not support AR.");
-    }
-  };
-
-  // HTML for embedding 3D model using model-viewer
-  const modelHtml = `
-    <html>
-      <head>
-        <script type="module" src="https://unpkg.com/@google/model-viewer"></script>
-        <style>
-          body { margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; }
-          .title-overlay {
-            position: absolute;
-            top: 20px;
-            width: 100%;
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-          }
-        </style>
-      </head>
-      <body>
-        <div class="title-overlay">Astronaut Model</div>
-        <model-viewer 
-          src="${modelViewUrl}" 
-          ar ar-modes="scene-viewer webxr quick-look"
-          camera-controls auto-rotate 
-          style="width: 100vw; height: 80vh;">
-        </model-viewer>
-      </body>
-    </html>
-  `;
-
   return (
     <View style={styles.container}>
       {/* Directly load the model URL in WebView */}
       <Animated.View style={[styles.modelContainer, { height: webViewHeight }]}>
-        <WebView source={{ html: modelHtml }} style={styles.webView} />
+        <WebView
+          source={{ uri: `${parsedProduct?.model_url}` }}
+          style={styles.webView}
+        />
       </Animated.View>
 
       {/* Scrollable Product Details */}
@@ -87,16 +51,11 @@ const ProductView = () => {
         )}
         scrollEventThrottle={16}
       >
-        <Text style={styles.title}>{modelName}</Text>
+        <Text style={styles.title}>{parsedProduct?.name}</Text>
         <Text style={styles.description}>
           This is a high-quality astronaut 3D model with AR support. Perfect for
           space enthusiasts and educational purposes.
         </Text>
-
-        {/* Buttons */}
-        <TouchableOpacity style={styles.button} onPress={openAR}>
-          <Text style={styles.buttonText}>🔍 View in AR</Text>
-        </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.button}

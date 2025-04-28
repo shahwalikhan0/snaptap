@@ -8,14 +8,9 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { Text } from "react-native";
+import { ProductType } from "../types/product-type";
 
-type Data = {
-  modelName: string;
-  productName: string;
-  productId: string;
-};
-
-const Card = (props: { width: number; data: Data }) => {
+const Card = (props: { width: number; data: ProductType }) => {
   console.log(props.data);
   const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
@@ -23,12 +18,7 @@ const Card = (props: { width: number; data: Data }) => {
     const item = props.data;
     router.push({
       pathname: "/pages/ProductView",
-      params: {
-        modelName: item.modelName,
-        // description: item.description,
-        // image: item.image,
-        // sender: item.sender,
-      },
+      params: { product: JSON.stringify(props.data) },
     });
   };
   return (
@@ -54,7 +44,7 @@ const Card = (props: { width: number; data: Data }) => {
               { color: isHovered ? "lightblue" : "white" },
             ]}
           >
-            {isHovered ? "View Details" : props.data.modelName}
+            {isHovered ? "View Details" : props.data.name}
           </Text>
         </View>
       </Pressable>
