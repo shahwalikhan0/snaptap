@@ -1,14 +1,14 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
   StyleSheet,
   SafeAreaView,
-  ActivityIndicator,
   TouchableOpacity,
   Image,
   Animated,
   TouchableWithoutFeedback,
+  Alert,
 } from "react-native";
 import { Icon, Input } from "@rneui/themed";
 import axios from "axios";
@@ -16,41 +16,20 @@ import { BASE_URL } from "../constants/urls";
 import { UserDataType } from "../types/user-data";
 
 const defaultUser: UserDataType = {
-  id: 0,
-  username: "Guest",
-  email: "guest@example.com",
+  id: 1,
+  username: "JohnDoe",
+  email: "john@example.com",
   password_hash: "",
-  phone: "N/A",
+  phone: "123-456-7890",
   role: "admin",
   created_at: "",
 };
 
 export default function ProfileScreen() {
-  const [user, setUser] = useState<UserDataType | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<UserDataType>(defaultUser);
   const [menuVisible, setMenuVisible] = useState(false);
-  const [error, setError] = useState<string>();
+  const [isEditing, setIsEditing] = useState(true); // Keep fields editable
   const menuOpacity = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get<UserDataType[]>(
-          `${BASE_URL}/api/users`
-        );
-        console.log("Fetched user data:", response.data);
-        setUser(response.data[0]); // choose the first user or implement selection logic
-      } catch (err) {
-        console.error("Error fetching user data:", err);
-        setUser(null);
-        setError("Failed to fetch user data");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserData();
-  }, []);
 
   const toggleMenu = () => {
     setMenuVisible(!menuVisible);
@@ -72,15 +51,19 @@ export default function ProfileScreen() {
     }
   };
 
-  if (loading) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <ActivityIndicator size="large" color="#007bff" />
-      </SafeAreaView>
-    );
-  }
-
-  const displayedUser = user || defaultUser;
+  const handleUpdate = async () => {
+    try {
+      const response = await axios.put(
+        `${BASE_URL}/api/users/${user.id}`,
+        user
+      );
+      console.log("User updated:", response.data);
+      Alert.alert("Success", "Profile updated successfully");
+    } catch (error) {
+      console.error("Update failed", error);
+      Alert.alert("Error", "Failed to update profile");
+    }
+  };
 
   return (
     <TouchableWithoutFeedback onPress={closeMenu}>
@@ -133,34 +116,52 @@ export default function ProfileScreen() {
         <View style={styles.content}>
           <Text style={styles.title}>Profile</Text>
 
-          {["Username", "Name", "Email", "Phone"].map((label, index) => {
-            const value =
-              label === "Username" || label === "Name"
-                ? displayedUser.username
-                : label === "Email"
-                ? displayedUser.email
-                : displayedUser.phone;
+          <View style={styles.infoContainer}>
+            <View style={styles.labelContainer}>
+              <Text style={styles.label}>Username:</Text>
+            </View>
+            <Input
+              value={user.username}
+              onChangeText={(text) => setUser({ ...user, username: text })}
+              containerStyle={styles.inputWrapper}
+              inputContainerStyle={styles.inputContainer}
+              inputStyle={styles.value}
+              editable={isEditing}
+            />
+          </View>
 
-            return (
-              <View key={label} style={styles.infoContainer}>
-                <View style={styles.labelContainer}>
-                  <Text style={styles.label}>{label}:</Text>
-                </View>
-                <Input
-                  style={styles.value}
-                  value={value}
-                  inputContainerStyle={styles.inputContainer}
-                  containerStyle={styles.inputWrapper}
-                  editable={false}
-                />
-              </View>
-            );
-          })}
+          <View style={styles.infoContainer}>
+            <View style={styles.labelContainer}>
+              <Text style={styles.label}>Email:</Text>
+            </View>
+            <Input
+              value={user.email}
+              onChangeText={(text) => setUser({ ...user, email: text })}
+              containerStyle={styles.inputWrapper}
+              inputContainerStyle={styles.inputContainer}
+              inputStyle={styles.value}
+              editable={isEditing}
+            />
+          </View>
+
+          <View style={styles.infoContainer}>
+            <View style={styles.labelContainer}>
+              <Text style={styles.label}>Phone:</Text>
+            </View>
+            <Input
+              value={user.phone}
+              onChangeText={(text) => setUser({ ...user, phone: text })}
+              containerStyle={styles.inputWrapper}
+              inputContainerStyle={styles.inputContainer}
+              inputStyle={styles.value}
+              editable={isEditing}
+            />
+          </View>
         </View>
 
         <TouchableOpacity
           style={styles.editProfileButton}
-          onPress={() => console.log("Edit Profile")}
+          onPress={handleUpdate}
         >
           <Text style={styles.editProfileText}>Update</Text>
         </TouchableOpacity>
@@ -238,7 +239,6 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     borderRadius: 10,
-    borderColor: "lightgrey",
     borderBottomWidth: 1,
     borderBottomColor: "lightgrey",
     paddingHorizontal: 5,
