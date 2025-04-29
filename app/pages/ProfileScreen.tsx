@@ -11,35 +11,39 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { Icon, Input } from "@rneui/themed";
+import axios from "axios";
+import { BASE_URL } from "../constants/urls";
+import { UserDataType } from "../types/user-data";
 
-const defaultUser = {
+const defaultUser: UserDataType = {
+  id: 0,
   username: "Guest",
-  first_name: "John",
-  last_name: "Doe",
   email: "guest@example.com",
+  password_hash: "",
   phone: "N/A",
   role: "admin",
+  created_at: "",
 };
 
 export default function ProfileScreen() {
-  const [user, setUser] = useState(defaultUser);
+  const [user, setUser] = useState<UserDataType | null>(null);
   const [loading, setLoading] = useState(true);
   const [menuVisible, setMenuVisible] = useState(false);
-
+  const [error, setError] = useState<string>();
   const menuOpacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch("https://your-api.com/user");
-        if (!response.ok) {
-          throw new Error("Failed to fetch user data");
-        }
-        const data = await response.json();
-        setUser(data);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        setUser(defaultUser);
+        const response = await axios.get<UserDataType[]>(
+          `${BASE_URL}/api/users`
+        );
+        console.log("Fetched user data:", response.data);
+        setUser(response.data[0]); // choose the first user or implement selection logic
+      } catch (err) {
+        console.error("Error fetching user data:", err);
+        setUser(null);
+        setError("Failed to fetch user data");
       } finally {
         setLoading(false);
       }
@@ -76,6 +80,8 @@ export default function ProfileScreen() {
     );
   }
 
+  const displayedUser = user || defaultUser;
+
   return (
     <TouchableWithoutFeedback onPress={closeMenu}>
       <SafeAreaView style={styles.container}>
@@ -85,7 +91,6 @@ export default function ProfileScreen() {
               source={require("@/assets/images/userprofile-icon.png")}
               style={styles.icon}
             />
-
             <View style={styles.fabContainer}>
               <TouchableOpacity
                 style={styles.fab}
@@ -96,7 +101,6 @@ export default function ProfileScreen() {
               >
                 <Icon name="camera" type="feather" color="white" size={24} />
               </TouchableOpacity>
-
               {menuVisible && (
                 <Animated.View style={[styles.menu, { opacity: menuOpacity }]}>
                   <TouchableOpacity
@@ -128,50 +132,30 @@ export default function ProfileScreen() {
 
         <View style={styles.content}>
           <Text style={styles.title}>Profile</Text>
-          <View style={styles.infoContainer}>
-            <View style={styles.labelContainer}>
-              <Text style={styles.label}>Username:</Text>
-            </View>
-            <Input
-              style={styles.value}
-              defaultValue={user.username}
-              inputContainerStyle={styles.inputContainer}
-              containerStyle={styles.inputWrapper}
-            />
-          </View>
-          <View style={styles.infoContainer}>
-            <View style={styles.labelContainer}>
-              <Text style={styles.label}>Name:</Text>
-            </View>
-            <Input
-              style={styles.value}
-              defaultValue={`${user.first_name} ${user.last_name}`}
-              inputContainerStyle={styles.inputContainer}
-              containerStyle={styles.inputWrapper}
-            />
-          </View>
-          <View style={styles.infoContainer}>
-            <View style={styles.labelContainer}>
-              <Text style={styles.label}>Email:</Text>
-            </View>
-            <Input
-              style={styles.value}
-              defaultValue={user.email}
-              inputContainerStyle={styles.inputContainer}
-              containerStyle={styles.inputWrapper}
-            />
-          </View>
-          <View style={styles.infoContainer}>
-            <View style={styles.labelContainer}>
-              <Text style={styles.label}>Phone:</Text>
-            </View>
-            <Input
-              style={styles.value}
-              defaultValue={user.phone || "N/A"}
-              inputContainerStyle={styles.inputContainer}
-              containerStyle={styles.inputWrapper}
-            />
-          </View>
+
+          {["Username", "Name", "Email", "Phone"].map((label, index) => {
+            const value =
+              label === "Username" || label === "Name"
+                ? displayedUser.username
+                : label === "Email"
+                ? displayedUser.email
+                : displayedUser.phone;
+
+            return (
+              <View key={label} style={styles.infoContainer}>
+                <View style={styles.labelContainer}>
+                  <Text style={styles.label}>{label}:</Text>
+                </View>
+                <Input
+                  style={styles.value}
+                  value={value}
+                  inputContainerStyle={styles.inputContainer}
+                  containerStyle={styles.inputWrapper}
+                  editable={false}
+                />
+              </View>
+            );
+          })}
         </View>
 
         <TouchableOpacity
@@ -204,7 +188,6 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     borderRadius: 50,
   },
-
   fabContainer: {
     position: "absolute",
     bottom: 0,
@@ -224,7 +207,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
   },
-
   content: {
     alignItems: "center",
     marginTop: 20,
@@ -241,23 +223,19 @@ const styles = StyleSheet.create({
     marginVertical: 2,
     paddingHorizontal: 10,
   },
-
   labelContainer: {
     width: 100,
   },
-
   label: {
     fontSize: 18,
     fontWeight: "bold",
     color: "#555",
   },
-
   inputWrapper: {
     flex: 1,
     paddingHorizontal: 0,
     top: -10,
   },
-
   inputContainer: {
     borderRadius: 10,
     borderColor: "lightgrey",
@@ -265,18 +243,10 @@ const styles = StyleSheet.create({
     borderBottomColor: "lightgrey",
     paddingHorizontal: 5,
   },
-
   value: {
     fontSize: 18,
     color: "#333",
   },
-  adminRole: {
-    color: "red",
-  },
-  userRole: {
-    color: "blue",
-  },
-
   menu: {
     position: "absolute",
     bottom: 60,
@@ -301,7 +271,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 10,
   },
-
   editProfileButton: {
     backgroundColor: "#007bff",
     paddingVertical: 12,
@@ -309,8 +278,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 40,
-    marginLeft: 10,
-    marginRight: 10,
+    marginHorizontal: 10,
   },
   editProfileText: {
     color: "white",

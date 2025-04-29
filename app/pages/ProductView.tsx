@@ -14,16 +14,30 @@ import { useLocalSearchParams } from "expo-router";
 import { ProductType } from "../types/product-type";
 
 const ProductView = () => {
-  const ip = "172.20.10.6";
-  const { product } = useLocalSearchParams();
-  const parsedProduct: ProductType | null = product
-    ? JSON.parse(Array.isArray(product) ? product[0] : product)
-    : null;
-  const productWebsite = "https://example.com/product";
-
   const scrollY = useRef(new Animated.Value(0)).current;
   const [isFavorite, setIsFavorite] = useState(false);
   const [userRating, setUserRating] = useState(0);
+
+  const { product } = useLocalSearchParams();
+  const parsedProduct: ProductType | null = product
+    ? JSON.parse(product as string)
+    : null;
+
+  const webViewHeight = scrollY.interpolate({
+    inputRange: [0, 300],
+    outputRange: [400, 200],
+    extrapolate: "clamp",
+  });
+
+  if (!parsedProduct) {
+    return (
+      <View style={styles.container}>
+        <Text style={{ textAlign: "center", marginTop: 50 }}>
+          No Product Data
+        </Text>
+      </View>
+    );
+  }
 
   const handleFavoritePress = () => {
     setIsFavorite(!isFavorite);
@@ -37,21 +51,14 @@ const ProductView = () => {
     setUserRating(rating);
   };
 
-  const webViewHeight = scrollY.interpolate({
-    inputRange: [0, 300],
-    outputRange: [400, 200],
-    extrapolate: "clamp",
-  });
-
   return (
     <View style={styles.container}>
       {/* Model Viewer */}
       <Animated.View style={[styles.modelContainer, { height: webViewHeight }]}>
         <WebView
-          source={{ uri: `${parsedProduct?.model_url}` }}
+          source={{ uri: parsedProduct.model_url }}
           style={styles.webView}
         />
-        {/* Favorite Floating Button */}
         <TouchableOpacity
           style={styles.favoriteFloatingButton}
           onPress={handleFavoritePress}
@@ -69,43 +76,32 @@ const ProductView = () => {
         )}
         scrollEventThrottle={16}
       >
-        {/* Main Card */}
         <View style={styles.card}>
-          <Text style={styles.title}>{parsedProduct?.name}</Text>
-
-          {/* Rating */}
+          <Text style={styles.title}>{parsedProduct.name}</Text>
           <View style={styles.ratingContainer}>
             <Text style={styles.ratingText}>⭐ 4.6</Text>
             <Text style={styles.reviewText}>(10 reviews)</Text>
           </View>
-
-          {/* Price */}
-          {parsedProduct?.price && (
+          {parsedProduct.price && (
             <Text style={styles.price}>${parsedProduct.price.toFixed(2)}</Text>
           )}
-
           <View style={styles.divider} />
-
-          {/* Category */}
           <Text style={styles.category}>
-            Category: {parsedProduct?.category}
+            Category: {parsedProduct.category}
           </Text>
         </View>
 
-        {/* Description Card */}
         <View style={styles.descriptionCard}>
           <Text style={styles.sectionTitle}>Description</Text>
           <Text style={styles.descriptionText}>
-            {parsedProduct?.description}
+            {parsedProduct.description}
           </Text>
         </View>
 
-        {/* Published By Card */}
         <View style={styles.publisherCard}>
           <Text style={styles.sectionTitle}>Published By</Text>
           <Text style={styles.publisherName}>Natalie</Text>
-
-          {parsedProduct?.image_url && (
+          {parsedProduct.image_url && (
             <Image
               source={{ uri: parsedProduct.image_url }}
               style={styles.publisherImage}
@@ -114,7 +110,6 @@ const ProductView = () => {
           )}
         </View>
 
-        {/* Rating Input */}
         <View style={styles.ratingInputCard}>
           <Text style={styles.sectionTitle}>Your Rating</Text>
           <View style={styles.starsRow}>
@@ -131,10 +126,9 @@ const ProductView = () => {
           </View>
         </View>
 
-        {/* Visit Website Button */}
         <TouchableOpacity
           style={styles.visitButton}
-          onPress={() => Linking.openURL(productWebsite)}
+          onPress={() => Linking.openURL("https://example.com/product")}
         >
           <Text style={styles.visitButtonText}>🌐 Visit Website</Text>
         </TouchableOpacity>
@@ -289,7 +283,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#0077cc",
     marginBottom: 10,
-    textAlign: "left", // fixed to left
+    textAlign: "left",
   },
   visitButton: {
     backgroundColor: "#0077cc",
