@@ -17,7 +17,7 @@ const sections = [
   { title: "Products" },
   { title: "Trending" },
   { title: "Brands" },
-  { title: "New Arrivals" },
+  { title: "New-Arivals" },
 ];
 
 const Home: React.FC = () => {
@@ -79,7 +79,15 @@ const Home: React.FC = () => {
                 </TouchableOpacity>
               ))}
 
-              <TouchableOpacity style={styles.showMore}>
+              <TouchableOpacity
+                style={styles.showMore}
+                onPress={() =>
+                  router.push({
+                    pathname: "/pages/ShowMore",
+                    params: { section: section.title },
+                  })
+                }
+              >
                 <Text style={styles.showMoreText}>Show More</Text>
               </TouchableOpacity>
             </ScrollView>

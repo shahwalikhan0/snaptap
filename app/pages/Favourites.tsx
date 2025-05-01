@@ -29,17 +29,26 @@ export default function FavouritesScreen() {
 
         {/* Cards Grid */}
         <FlatList
-          data={[...Array(10)]} // Example data for 10 items
+          ListHeaderComponent={
+            <>
+              <Text style={styles.text}>Favourites</Text>
+              <TextInput
+                style={styles.searchBar}
+                placeholder="Search favourites..."
+              />
+            </>
+          }
+          data={[...Array(10)]}
           numColumns={numColumns}
           keyExtractor={(item, index) => index.toString()}
-          renderItem={() => (
+          renderItem={({ item }) => (
             <View
               style={[
                 styles.cardContainer,
                 { width: screenWidth / numColumns - cardMargin },
               ]}
             >
-              <Card width={cardWidth} />
+              <Card width={cardWidth} data={item} />
             </View>
           )}
           contentContainerStyle={styles.list}

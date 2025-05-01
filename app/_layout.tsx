@@ -18,6 +18,14 @@ export default function RootLayout() {
         }}
       />
       <Stack.Screen
+        name="pages/ShowMore"
+        options={{
+          headerShown: true,
+          headerTitle: "More Products",
+          headerBackTitle: "Back",
+        }}
+      />
+      <Stack.Screen
         name="model-viewer"
         options={{ headerTitle: "3D Viewer" }}
       />
