@@ -28,7 +28,7 @@ const defaultUser: UserDataType = {
 export default function ProfileScreen() {
   const [user, setUser] = useState<UserDataType>(defaultUser);
   const [menuVisible, setMenuVisible] = useState(false);
-  const [isEditing, setIsEditing] = useState(true); // Keep fields editable
+  const [isEditing, setIsEditing] = useState(true);
   const menuOpacity = useRef(new Animated.Value(0)).current;
 
   const toggleMenu = () => {

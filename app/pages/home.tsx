@@ -6,12 +6,18 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
-import { Text, Divider } from "@rneui/themed";
+import { Text, Divider, Icon } from "@rneui/themed";
 import Card from "../components/Card";
 import { useRouter } from "expo-router";
 import { BASE_URL } from "../constants/urls";
 import { ProductType } from "../types/product-type";
 import axios from "axios";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withTiming,
+} from "react-native-reanimated";
 
 const sections = [
   { title: "Products" },
@@ -25,6 +31,8 @@ const Home: React.FC = () => {
   const [products, setProducts] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>();
+
+  const rotation = useSharedValue(0);
 
   useEffect(() => {
     const fetchModelData = async () => {
@@ -40,7 +48,14 @@ const Home: React.FC = () => {
     };
 
     fetchModelData();
+
+    // Start spinning animation
+    rotation.value = withRepeat(withTiming(360, { duration: 2000 }), -1);
   }, []);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${rotation.value}deg` }],
+  }));
 
   if (loading) {
     return (
@@ -80,7 +95,14 @@ const Home: React.FC = () => {
               ))}
 
               <TouchableOpacity style={styles.showMore}>
-                <Text style={styles.showMoreText}>Show More</Text>
+                <Animated.View style={animatedStyle}>
+                  <Icon
+                    name="arrow-right"
+                    type="font-awesome"
+                    color="white"
+                    size={20}
+                  />
+                </Animated.View>
               </TouchableOpacity>
             </ScrollView>
             <Divider style={styles.divider} />
@@ -96,13 +118,17 @@ const styles = StyleSheet.create({
   content: { paddingHorizontal: 10 },
   heading: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
   showMore: {
-    paddingHorizontal: 15,
-    backgroundColor: "#3498db",
-    borderRadius: 5,
-    marginVertical: 10,
+    height: 60,
+    width: 60,
+    borderRadius: 30,
+    backgroundColor: "#00A8DE",
     justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+    marginVertical: 10,
+    marginHorizontal: 10,
   },
-  showMoreText: { color: "white", fontSize: 16 },
+
   divider: { marginVertical: 15 },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   errorText: { color: "red", fontSize: 16 },
