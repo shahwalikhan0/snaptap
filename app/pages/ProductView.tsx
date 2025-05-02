@@ -12,8 +12,13 @@ import { WebView } from "react-native-webview";
 import React, { useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { ProductType } from "../types/product-type";
+import { useRouter } from "expo-router";
 
 const ProductView = () => {
+  const router = useRouter();
+
+  const isLoggedIn = false; // Replace this with actual auth state
+
   const scrollY = useRef(new Animated.Value(0)).current;
   const [isFavorite, setIsFavorite] = useState(false);
   const [userRating, setUserRating] = useState(0);
@@ -40,6 +45,25 @@ const ProductView = () => {
   }
 
   const handleFavoritePress = () => {
+    if (!isLoggedIn) {
+      Alert.alert(
+        "Login Required",
+        "You need to log in or sign up to add this item to favorites.",
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Login",
+            onPress: () => {
+              router.push({
+                pathname: "/pages/Login",
+              });
+            },
+          },
+        ]
+      );
+      return;
+    }
+
     setIsFavorite(!isFavorite);
     Alert.alert(
       "Success",

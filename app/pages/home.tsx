@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ScrollView,
   View,
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
+  Animated,
 } from "react-native";
 import { Text, Divider } from "@rneui/themed";
 import Card from "../components/Card";
@@ -12,6 +13,7 @@ import { useRouter } from "expo-router";
 import { BASE_URL } from "../constants/urls";
 import { ProductType } from "../types/product-type";
 import axios from "axios";
+import HomeHeader from "../components/HomeHeader";
 
 const sections = [
   { title: "Products" },

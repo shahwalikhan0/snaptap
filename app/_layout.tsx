@@ -26,6 +26,14 @@ export default function RootLayout() {
         }}
       />
       <Stack.Screen
+        name="pages/Login"
+        options={{
+          headerShown: true,
+          headerTitle: "Login",
+          headerBackTitle: "Back",
+        }}
+      />
+      <Stack.Screen
         name="model-viewer"
         options={{ headerTitle: "3D Viewer" }}
       />

@@ -5,7 +5,6 @@ import {
   StyleSheet,
   ActivityIndicator,
   TouchableOpacity,
-  Dimensions,
 } from "react-native";
 import { Text } from "@rneui/themed";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -13,8 +12,6 @@ import axios from "axios";
 import { BASE_URL } from "../constants/urls";
 import { ProductType } from "../types/product-type";
 import Card from "../components/Card";
-
-const cardWidth = (Dimensions.get("window").width - 40) / 2;
 
 const ShowMore: React.FC = () => {
   const { section } = useLocalSearchParams();
