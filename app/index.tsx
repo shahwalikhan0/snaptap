@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, createContext } from "react";
+
 import { SafeAreaView, StyleSheet, ScrollView } from "react-native";
 import HomeHeader from "./components/HomeHeader";
 import SideMenu from "./components/LeftMenu";
@@ -9,10 +10,13 @@ import PaymentsScreen from "./pages/PaymentsScreen";
 import SettingsScreen from "./pages/SettingsScreen";
 import HelpScreen from "./pages/HelpScreen";
 import FavouritesScreen from "./pages/Favourites";
+import { UserDataType } from "./types/user-data";
+import { UserContext } from "./components/user-context";
 
 export default function Index() {
   const [menuVisible, setMenuVisible] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<string>(MENU_ITEMS.HOME);
+  const [user, setUser] = useState<UserDataType | null>(null);
 
   const handleShowMenu = () => setMenuVisible(true);
 
@@ -36,15 +40,20 @@ export default function Index() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <SideMenu
-        isVisible={menuVisible}
-        closeMenu={handleHideMenu}
-        setSelectedItem={setSelectedItem}
-      />
-      <HomeHeader openMenu={handleShowMenu} setSelectedItem={setSelectedItem} />
-      <ScrollView>{renderSelectedPage()}</ScrollView>
-    </SafeAreaView>
+    <UserContext.Provider value={{ user, setUser }}>
+      <SafeAreaView style={styles.container}>
+        <SideMenu
+          isVisible={menuVisible}
+          closeMenu={handleHideMenu}
+          setSelectedItem={setSelectedItem}
+        />
+        <HomeHeader
+          openMenu={handleShowMenu}
+          setSelectedItem={setSelectedItem}
+        />
+        <ScrollView>{renderSelectedPage()}</ScrollView>
+      </SafeAreaView>
+    </UserContext.Provider>
   );
 }
 

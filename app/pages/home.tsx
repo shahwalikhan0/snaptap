@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   ScrollView,
   View,
@@ -14,6 +14,7 @@ import { BASE_URL } from "../constants/urls";
 import { ProductType } from "../types/product-type";
 import axios from "axios";
 import HomeHeader from "../components/HomeHeader";
+import { UserContext } from "../components/user-context";
 
 const sections = [
   { title: "Products" },
@@ -23,11 +24,16 @@ const sections = [
 ];
 
 const Home: React.FC = () => {
+  const context = useContext(UserContext);
   const router = useRouter();
   const [products, setProducts] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>();
 
+  const { user } = context;
+
+  if (!user) console.log("no user");
+  else console.log(user);
   useEffect(() => {
     const fetchModelData = async () => {
       try {

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -12,14 +12,18 @@ import {
 import { useRouter } from "expo-router";
 import axios from "axios";
 import { BASE_URL } from "../constants/urls"; // Ensure BASE_URL is correctly defined
+import { UserContext } from "../components/user-context";
 
 const Login = () => {
+  const context = useContext(UserContext);
+
   const [username, setUsername] = useState(""); // Changed from email to username
   const [password, setPassword] = useState("");
   const [showLoginForm, setShowLoginForm] = useState(false);
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const router = useRouter();
 
+  const { setUser } = context;
   useEffect(() => {
     // Start fade out after 2 seconds
     setTimeout(() => {
@@ -46,6 +50,7 @@ const Login = () => {
       );
 
       if (response.data.allow) {
+        // setUser();
         // If valid, log the user in
         Alert.alert("Success", "Logged in successfully.");
         router.push("/");
