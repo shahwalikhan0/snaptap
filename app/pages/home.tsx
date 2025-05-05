@@ -13,14 +13,12 @@ import { useRouter } from "expo-router";
 import { BASE_URL } from "../constants/urls";
 import { ProductType } from "../types/product-type";
 import axios from "axios";
-import HomeHeader from "../components/HomeHeader";
 import { UserContext } from "../components/user-context";
 
 const sections = [
-  { title: "Products" },
+  // { title: "Products" },
   { title: "Trending" },
-  { title: "Brands" },
-  { title: "New-Arivals" },
+  { title: "New-Arrivals" },
 ];
 
 const Home: React.FC = () => {
@@ -31,7 +29,10 @@ const Home: React.FC = () => {
   const [error, setError] = useState<string>();
 
   const { user } = context;
-
+  useEffect(() => {
+    console.log(user);
+    console.log("home.tsx");
+  }, [user]);
   if (!user) console.log("no user");
   else console.log(user);
   useEffect(() => {
@@ -108,7 +109,7 @@ const Home: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "white" },
+  container: { flex: 1, backgroundColor: "lightgrey" },
   content: { paddingHorizontal: 10 },
   heading: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
   showMore: {

@@ -23,7 +23,7 @@ const Login = () => {
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const router = useRouter();
 
-  const { setUser } = context;
+  const { setUser, user } = context;
   useEffect(() => {
     // Start fade out after 2 seconds
     setTimeout(() => {
@@ -49,11 +49,19 @@ const Login = () => {
         `${BASE_URL}/api/users/allow-customer-login/${username}/${password}`
       );
 
-      if (response.data.allow) {
-        // setUser();
+      if (response.data.id) {
+        // setUser(response.data);
+        setUser({
+          id: 1,
+          username: "john_doe",
+          email: "john.doe@example.com",
+          phone: "1234567890",
+          image_url:
+            "https://d1lfxha3ugu3d4.cloudfront.net/assets/system-images/made/assets/system-images/remote/https_d1lfxha3ugu3d4.cloudfront.net/exhibitions/images/2015_Sneaker_Culture_1._AJ_1_from_Nike_4000W.jpg_600_400.jpg",
+        });
         // If valid, log the user in
         Alert.alert("Success", "Logged in successfully.");
-        router.push("/");
+        router.replace("/");
       } else {
         // If invalid username or password
         Alert.alert("Error", "Invalid username or password.");
