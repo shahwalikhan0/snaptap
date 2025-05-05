@@ -11,11 +11,9 @@ import { Text } from "react-native";
 import { ProductType } from "../types/product-type";
 
 const Card = (props: { width: number; data: ProductType }) => {
-  console.log(props.data);
   const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
   const navigateToProductView = () => {
-    const item = props.data;
     router.push({
       pathname: "/pages/ProductView",
       params: { product: JSON.stringify(props.data) },

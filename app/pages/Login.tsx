@@ -12,10 +12,10 @@ import {
 import { useRouter } from "expo-router";
 import axios from "axios";
 import { BASE_URL } from "../constants/urls"; // Ensure BASE_URL is correctly defined
-import { UserContext } from "../components/user-context";
+import { useUser } from "../constants/user-context";
 
 const Login = () => {
-  const context = useContext(UserContext);
+  const context = useUser();
 
   const [username, setUsername] = useState(""); // Changed from email to username
   const [password, setPassword] = useState("");
@@ -25,7 +25,7 @@ const Login = () => {
 
   const { setUser, user } = context;
   useEffect(() => {
-    // Start fade out after 2 seconds
+    // Start fade out after 0.2 seconds
     setTimeout(() => {
       Animated.timing(fadeAnim, {
         toValue: 0,
@@ -34,7 +34,7 @@ const Login = () => {
       }).start(() => {
         setShowLoginForm(true);
       });
-    }, 2000);
+    }, 200);
   }, []);
 
   const handleLogin = async () => {
@@ -50,15 +50,7 @@ const Login = () => {
       );
 
       if (response.data.id) {
-        // setUser(response.data);
-        setUser({
-          id: 1,
-          username: "john_doe",
-          email: "john.doe@example.com",
-          phone: "1234567890",
-          image_url:
-            "https://d1lfxha3ugu3d4.cloudfront.net/assets/system-images/made/assets/system-images/remote/https_d1lfxha3ugu3d4.cloudfront.net/exhibitions/images/2015_Sneaker_Culture_1._AJ_1_from_Nike_4000W.jpg_600_400.jpg",
-        });
+        setUser(response.data);
         // If valid, log the user in
         Alert.alert("Success", "Logged in successfully.");
         router.replace("/");

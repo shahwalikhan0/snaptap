@@ -13,7 +13,7 @@ import { useRouter } from "expo-router";
 import { BASE_URL } from "../constants/urls";
 import { ProductType } from "../types/product-type";
 import axios from "axios";
-import { UserContext } from "../components/user-context";
+import { useUser } from "../constants/user-context";
 
 const sections = [
   // { title: "Products" },
@@ -22,19 +22,14 @@ const sections = [
 ];
 
 const Home: React.FC = () => {
-  const context = useContext(UserContext);
+  const context = useUser();
   const router = useRouter();
   const [products, setProducts] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>();
 
   const { user } = context;
-  useEffect(() => {
-    console.log(user);
-    console.log("home.tsx");
-  }, [user]);
-  if (!user) console.log("no user");
-  else console.log(user);
+
   useEffect(() => {
     const fetchModelData = async () => {
       try {

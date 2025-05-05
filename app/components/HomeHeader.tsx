@@ -1,8 +1,16 @@
 import { Icon } from "@rneui/themed";
 import React from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+} from "react-native";
 import { useRouter } from "expo-router";
 import { MENU_ITEMS } from "../constants/menu-items";
+import { useUser } from "../constants/user-context";
 
 const HomeHeader: React.FC<{
   openMenu: () => void;
@@ -10,10 +18,31 @@ const HomeHeader: React.FC<{
 }> = ({ openMenu, setSelectedItem }) => {
   const router = useRouter();
 
+  const context = useUser();
+
+  const { user } = context;
+  const isLoggedIn = !!user;
+
+  const handleOpenMenu = () => {
+    if (isLoggedIn) {
+      openMenu();
+    } else {
+      Alert.alert("Error", "Please login!!!.");
+    }
+  };
+
+  const handleNotificationPress = () => {
+    if (isLoggedIn) {
+      router.push({
+        pathname: "/pages/Notification",
+      });
+    }
+  };
+
   return (
     <View style={styles.header}>
       {/* Left: Open Menu */}
-      <TouchableOpacity onPress={openMenu} style={styles.iconButton}>
+      <TouchableOpacity onPress={handleOpenMenu} style={styles.iconButton}>
         <Image
           source={require("@/assets/images/icon.png")}
           style={styles.icon}
@@ -37,7 +66,7 @@ const HomeHeader: React.FC<{
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => router.push("/pages/Notification")}
+        onPress={handleNotificationPress}
         style={styles.iconButton}
       >
         <Icon name="bell" size={16} color="black" type="font-awesome" />
