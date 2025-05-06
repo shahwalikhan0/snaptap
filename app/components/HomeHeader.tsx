@@ -22,7 +22,6 @@ const HomeHeader: React.FC<{
 
   const { user } = context;
   const isLoggedIn = !!user;
-
   const handleOpenMenu = () => {
     if (isLoggedIn) {
       openMenu();

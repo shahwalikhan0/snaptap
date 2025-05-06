@@ -5,12 +5,18 @@ export default function RootLayout() {
   return (
     <UserProvider>
       <Stack screenOptions={{ headerShown: false }}>
-        {/* <Stack.Screen name="pages/Home" options={{ headerTitle: "SnapTap" }} /> */}
+        <Stack.Screen
+          name="pages/Home"
+          options={{
+            headerTitle: "SnapTap",
+            gestureEnabled: false,
+            animationTypeForReplace: "pop",
+          }}
+        />
         <Stack.Screen
           name="product-view"
           options={{ headerTitle: "Product Details" }}
         />
-        <Stack.Screen name="pages/Home" options={{ headerTitle: "SnapTap" }} />
         <Stack.Screen
           name="pages/ProductView"
           options={{

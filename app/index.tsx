@@ -6,7 +6,6 @@ import SideMenu from "./components/LeftMenu";
 import Home from "./pages/home";
 import ProfileScreen from "./pages/ProfileScreen";
 import { MENU_ITEMS } from "./constants/menu-items";
-import PaymentsScreen from "./pages/PaymentsScreen";
 import SettingsScreen from "./pages/SettingsScreen";
 import HelpScreen from "./pages/HelpScreen";
 import FavouritesScreen from "./pages/Favourites";
@@ -23,8 +22,6 @@ export default function Index() {
     switch (selectedItem) {
       case MENU_ITEMS.PROFILE:
         return <ProfileScreen />;
-      case MENU_ITEMS.PAYMENT:
-        return <PaymentsScreen />;
       case MENU_ITEMS.FAVOURITES:
         return <FavouritesScreen />;
       case MENU_ITEMS.SETTINGS:

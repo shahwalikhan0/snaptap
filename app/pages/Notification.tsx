@@ -14,17 +14,20 @@ import { Divider, Icon } from "@rneui/themed";
 import axios from "axios";
 import { NotificationType } from "../types/notification-data";
 import { BASE_URL } from "../constants/urls";
+import { useUser } from "../constants/user-context";
 
 export default function NotificationsScreen() {
   const router = useRouter();
   const [notifications, setNotifications] = useState<NotificationType[]>([]);
   const [loading, setLoading] = useState(true);
+  const context = useUser();
 
+  const { user } = context;
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
         const response = await axios.get(
-          `${BASE_URL}/api/notifications/user-id/1`
+          `${BASE_URL}/api/notifications/user-id/${user?.id}`
         );
 
         setNotifications(response.data);

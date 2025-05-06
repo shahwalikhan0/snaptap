@@ -11,8 +11,12 @@ import {
   ScrollView,
 } from "react-native";
 import Modal from "react-native-modal";
+import { useUser } from "../constants/user-context";
 
 const { width } = Dimensions.get("window");
+const context = useUser();
+
+// const { user } = context;
 
 const SideMenu = ({
   isVisible,
@@ -23,6 +27,8 @@ const SideMenu = ({
   closeMenu: () => void;
   setSelectedItem: (item: string) => void;
 }) => {
+  const { user } = useUser(); // ✅ Hook used properly inside component
+
   const handleItemClick = (item: string) => {
     setSelectedItem(item);
     closeMenu();
@@ -40,13 +46,15 @@ const SideMenu = ({
       <ScrollView style={styles.sideMenuWrapper}>
         <TouchableOpacity style={{ alignItems: "center" }}>
           <Image
-            source={require("@/assets/images/userprofile-icon.png")}
+            source={{
+              uri: user?.image_url || "https://example.com/default.png",
+            }}
             style={styles.icon}
           />
         </TouchableOpacity>
 
         <View style={styles.menuItemsWrapper}>
-          <Text style={styles.menuTitle}>Profile</Text>
+          <Text style={styles.menuTitle}>{user?.username || "Guest"}</Text>
           <View style={styles.divider} />
 
           <TouchableOpacity
@@ -58,19 +66,6 @@ const SideMenu = ({
           </TouchableOpacity>
           <View style={styles.menuItemsDivider} />
 
-          <TouchableOpacity
-            style={styles.menuItems}
-            onPress={() => handleItemClick(MENU_ITEMS.PAYMENT)}
-          >
-            <Icon
-              name="credit-card"
-              size={15}
-              color="black"
-              type="font-awesome"
-            />
-            <Text>Payment & Subscriptions</Text>
-          </TouchableOpacity>
-          <View style={styles.menuItemsDivider} />
           <TouchableOpacity
             style={styles.menuItems}
             onPress={() => handleItemClick(MENU_ITEMS.FAVOURITES)}
