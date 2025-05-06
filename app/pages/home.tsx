@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   ScrollView,
   View,
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
+  Animated,
 } from "react-native";
 import { Text, Divider, Icon } from "@rneui/themed";
 import Card from "../components/Card";
@@ -18,22 +19,22 @@ import Animated, {
   withRepeat,
   withTiming,
 } from "react-native-reanimated";
+import { useUser } from "../constants/user-context";
 
 const sections = [
-  { title: "Products" },
+  // { title: "Products" },
   { title: "Trending" },
-  { title: "Brands" },
-  { title: "New Arrivals" },
+  { title: "New-Arrivals" },
 ];
 
 const Home: React.FC = () => {
+  const context = useUser();
   const router = useRouter();
   const [products, setProducts] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>();
-
   const rotation = useSharedValue(0);
-
+  const { user } = context;
   useEffect(() => {
     const fetchModelData = async () => {
       try {
@@ -114,7 +115,7 @@ const Home: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "white" },
+  container: { flex: 1, backgroundColor: "lightgrey" },
   content: { paddingHorizontal: 10 },
   heading: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
   showMore: {

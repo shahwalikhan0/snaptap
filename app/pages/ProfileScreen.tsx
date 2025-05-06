@@ -19,10 +19,8 @@ const defaultUser: UserDataType = {
   id: 1,
   username: "JohnDoe",
   email: "john@example.com",
-  password_hash: "",
   phone: "123-456-7890",
-  role: "admin",
-  created_at: "",
+  image_url: "example.jpg",
 };
 
 export default function ProfileScreen() {
@@ -57,7 +55,7 @@ export default function ProfileScreen() {
         `${BASE_URL}/api/users/${user.id}`,
         user
       );
-      console.log("User updated:", response.data);
+      // console.log("User updated:", response.data);
       Alert.alert("Success", "Profile updated successfully");
     } catch (error) {
       console.error("Update failed", error);

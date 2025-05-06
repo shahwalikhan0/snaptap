@@ -39,7 +39,7 @@ export default function FavouritesScreen() {
                 { width: screenWidth / numColumns - cardMargin },
               ]}
             >
-              <Card width={cardWidth} />
+              {/* <Card data={[]} width={cardWidth} /> */}
             </View>
           )}
           contentContainerStyle={styles.list}
