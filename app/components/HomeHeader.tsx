@@ -62,14 +62,14 @@ const HomeHeader: React.FC<{
         onPress={() => console.log("Searchbar clicked")}
         style={styles.iconButton}
       >
-        <Icon name="search" size={16} color="black" type="font-awesome" />
+        <Icon name="search" size={19} color="#00A8DE" type="font-awesome" />
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={handleNotificationPress}
         style={styles.iconButton}
       >
-        <Icon name="bell" size={16} color="black" type="font-awesome" />
+        <Icon name="bell" size={19} color="#00A8DE" type="font-awesome" />
       </TouchableOpacity>
     </View>
   );
@@ -92,10 +92,10 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   icon: {
-    width: 40,
-    height: 40,
+    width: 45,
+    height: 45,
     resizeMode: "contain",
-    borderRadius: 12,
+    borderRadius: 10,
   },
   title: {
     fontSize: 18,
