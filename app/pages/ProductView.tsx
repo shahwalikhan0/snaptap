@@ -9,8 +9,9 @@ import {
   Alert,
 } from "react-native";
 import { WebView } from "react-native-webview";
+import { Icon } from "@rneui/themed";
 import React, { useRef, useState } from "react";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { ProductType } from "../types/product-type";
 import { useRouter } from "expo-router";
 
@@ -22,6 +23,7 @@ const ProductView = () => {
   const scrollY = useRef(new Animated.Value(0)).current;
   const [isFavorite, setIsFavorite] = useState(false);
   const [userRating, setUserRating] = useState(0);
+  const router = useRouter();
 
   const { product } = useLocalSearchParams();
   const parsedProduct: ProductType | null = product
@@ -77,21 +79,35 @@ const ProductView = () => {
 
   return (
     <View style={styles.container}>
-      {/* Model Viewer */}
       <Animated.View style={[styles.modelContainer, { height: webViewHeight }]}>
         <WebView
           source={{ uri: parsedProduct.model_url }}
           style={styles.webView}
         />
+
+        {/* Back Button */}
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
+          <Icon name="arrow-left" type="font-awesome" size={22} color="#fff" />
+        </TouchableOpacity>
+
+        {/* Favorite Button */}
         <TouchableOpacity
           style={styles.favoriteFloatingButton}
           onPress={handleFavoritePress}
+          activeOpacity={0.7}
         >
-          <Text style={{ fontSize: 24 }}>{isFavorite ? "❤️" : "🤍"}</Text>
+          <Icon
+            name="heart"
+            type="font-awesome"
+            color={isFavorite ? "#00A8DE" : "gray"}
+            size={28}
+          />
         </TouchableOpacity>
       </Animated.View>
 
-      {/* Product Details */}
       <Animated.ScrollView
         contentContainerStyle={styles.detailsContainer}
         onScroll={Animated.event(
@@ -102,17 +118,43 @@ const ProductView = () => {
       >
         <View style={styles.card}>
           <Text style={styles.title}>{parsedProduct.name}</Text>
-          <View style={styles.ratingContainer}>
-            <Text style={styles.ratingText}>⭐ 4.6</Text>
-            <Text style={styles.reviewText}>(10 reviews)</Text>
+
+          <View style={styles.cardRow}>
+            <View style={styles.ratingContainer}>
+              <Icon
+                name="star"
+                type="font-awesome"
+                color="gold"
+                size={18}
+                style={{ marginRight: 5 }}
+              />
+              <Text style={styles.ratingText}>4.6</Text>
+              <Text style={styles.reviewText}>(10 reviews)</Text>
+            </View>
+            <View style={styles.categoryBadge}>
+              <Text style={styles.categoryText}>{parsedProduct.category}</Text>
+            </View>
           </View>
+
           {parsedProduct.price && (
             <Text style={styles.price}>${parsedProduct.price.toFixed(2)}</Text>
           )}
+
           <View style={styles.divider} />
-          <Text style={styles.category}>
-            Category: {parsedProduct.category}
-          </Text>
+
+          <TouchableOpacity
+            style={styles.visitButton}
+            onPress={() => Linking.openURL("https://example.com/product")}
+          >
+            <Icon
+              name="globe"
+              type="font-awesome"
+              color="#00A8DE"
+              size={16}
+              style={{ marginRight: 8 }}
+            />
+            <Text style={styles.visitButtonText}>Visit Website</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.descriptionCard}>
@@ -124,14 +166,16 @@ const ProductView = () => {
 
         <View style={styles.publisherCard}>
           <Text style={styles.sectionTitle}>Published By</Text>
-          <Text style={styles.publisherName}>Natalie</Text>
-          {parsedProduct.image_url && (
-            <Image
-              source={{ uri: parsedProduct.image_url }}
-              style={styles.publisherImage}
-              resizeMode="cover"
-            />
-          )}
+          <View style={styles.publisherRow}>
+            <Text style={styles.publisherName}>Natalie</Text>
+            {parsedProduct.image_url && (
+              <Image
+                source={{ uri: parsedProduct.image_url }}
+                style={styles.publisherImage}
+                resizeMode="cover"
+              />
+            )}
+          </View>
         </View>
 
         <View style={styles.ratingInputCard}>
@@ -141,21 +185,19 @@ const ProductView = () => {
               <TouchableOpacity
                 key={star}
                 onPress={() => handleStarPress(star)}
+                activeOpacity={0.7}
               >
-                <Text style={{ fontSize: 30, marginHorizontal: 5 }}>
-                  {userRating >= star ? "⭐" : "☆"}
-                </Text>
+                <Icon
+                  name="star"
+                  type="font-awesome"
+                  color={userRating >= star ? "gold" : "gray"}
+                  size={30}
+                  style={{ marginHorizontal: 5 }}
+                />
               </TouchableOpacity>
             ))}
           </View>
         </View>
-
-        <TouchableOpacity
-          style={styles.visitButton}
-          onPress={() => Linking.openURL("https://example.com/product")}
-        >
-          <Text style={styles.visitButtonText}>🌐 Visit Website</Text>
-        </TouchableOpacity>
       </Animated.ScrollView>
     </View>
   );
@@ -163,10 +205,14 @@ const ProductView = () => {
 
 export default ProductView;
 
+ProductView.options = {
+  headerShown: false,
+};
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#e6f0fa",
+    backgroundColor: "rgb(237, 237, 237)",
   },
   modelContainer: {
     width: "100%",
@@ -175,6 +221,15 @@ const styles = StyleSheet.create({
   },
   webView: {
     flex: 1,
+  },
+  backButton: {
+    position: "absolute",
+    top: 40, // adjust as per status bar
+    left: 16,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    padding: 10,
+    borderRadius: 30,
+    zIndex: 999,
   },
   favoriteFloatingButton: {
     position: "absolute",
@@ -207,41 +262,66 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "bold",
     textAlign: "left",
-    color: "#0077cc",
+    color: "#2e2e2e",
     marginBottom: 10,
+  },
+  cardRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   ratingContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 8,
   },
   ratingText: {
     fontSize: 18,
-    color: "#f5a623",
+    color: "gold",
     fontWeight: "600",
-    marginRight: 6,
+    marginRight: 4,
   },
   reviewText: {
     fontSize: 16,
     color: "#7d7d7d",
   },
+  categoryBadge: {
+    backgroundColor: "#d1ecf9",
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 12,
+  },
+  categoryText: {
+    fontSize: 14,
+    color: "#0077cc",
+    fontWeight: "500",
+  },
   price: {
     fontSize: 26,
-    color: "#e63946",
+    color: "#555555",
     fontWeight: "bold",
     textAlign: "left",
     marginVertical: 12,
   },
   divider: {
     height: 1,
-    backgroundColor: "#cce0f5",
+    backgroundColor: "##00A8DE",
     marginVertical: 12,
   },
-  category: {
+  visitButton: {
+    flexDirection: "row",
+    backgroundColor: "#ffffff",
+    paddingVertical: 12,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1, // Add this line
+    borderColor: "#00A8DE", // And this one
+  },
+
+  visitButtonText: {
+    color: "#00A8DE",
     fontSize: 16,
-    color: "#333",
-    textAlign: "left",
-    marginBottom: 8,
+    fontWeight: "600",
   },
   descriptionCard: {
     backgroundColor: "#ffffff",
@@ -256,7 +336,7 @@ const styles = StyleSheet.create({
   },
   descriptionText: {
     fontSize: 16,
-    color: "#555",
+    color: "#555555",
     lineHeight: 22,
     textAlign: "left",
   },
@@ -265,25 +345,33 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 18,
     marginBottom: 16,
-    alignItems: "center",
+    alignItems: "flex-start",
+    flexDirection: "column",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 5,
     elevation: 4,
   },
+  publisherRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    width: "100%",
+  },
   publisherName: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#333",
-    marginBottom: 10,
-    textAlign: "center",
+    color: "#555555",
+    marginRight: 10,
+    flexWrap: "wrap",
+    flex: 1,
   },
   publisherImage: {
-    width: 150,
-    height: 150,
-    borderRadius: 12,
-    marginTop: 8,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginTop: 0,
   },
   ratingInputCard: {
     backgroundColor: "#ffffff",
@@ -305,20 +393,8 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#0077cc",
+    color: "#2e2e2e",
     marginBottom: 10,
     textAlign: "left",
-  },
-  visitButton: {
-    backgroundColor: "#0077cc",
-    paddingVertical: 14,
-    borderRadius: 12,
-    alignItems: "center",
-    marginBottom: 24,
-  },
-  visitButtonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "600",
   },
 });
