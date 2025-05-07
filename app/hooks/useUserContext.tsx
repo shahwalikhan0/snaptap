@@ -3,11 +3,13 @@ import { UserDataType } from "../types/user-data";
 
 type UserContextType = {
   user: UserDataType | null;
+  isLoggedIn: Boolean;
   setUser: (user: UserDataType) => void;
 };
 
 export const UserContext = createContext<UserContextType>({
   user: null,
+  isLoggedIn: false,
   setUser: () => {},
 });
 
@@ -16,8 +18,9 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [user, setUser] = useState<UserDataType | null>(null);
 
+  const isLoggedIn = !!user?.id;
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, isLoggedIn, setUser }}>
       {children}
     </UserContext.Provider>
   );

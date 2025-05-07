@@ -16,7 +16,7 @@ const Card = (props: { width: number; data: ProductType }) => {
   const navigateToProductView = () => {
     router.push({
       pathname: "/pages/ProductView",
-      params: { product: JSON.stringify(props.data) },
+      params: { productID: JSON.stringify(props.data.id) },
     });
   };
   return (

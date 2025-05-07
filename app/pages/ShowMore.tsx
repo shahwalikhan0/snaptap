@@ -14,7 +14,7 @@ import { ProductType } from "../types/product-type";
 import Card from "../components/Card";
 
 const ShowMore: React.FC = () => {
-  const { section } = useLocalSearchParams();
+  const { sectionTitle } = useLocalSearchParams();
   const router = useRouter();
   const [products, setProducts] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(true);
@@ -23,7 +23,9 @@ const ShowMore: React.FC = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/api/products/${section}`);
+        const response = await axios.get(
+          `${BASE_URL}/api/products/${sectionTitle}`
+        );
         setProducts(response.data);
       } catch (err) {
         console.error("Error fetching products:", err);
@@ -54,7 +56,7 @@ const ShowMore: React.FC = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <Text style={styles.heading}>More in {section}</Text>
+      <Text style={styles.heading}>More in {sectionTitle}</Text>
       <View style={styles.grid}>
         {products.map((product, index) => (
           <TouchableOpacity

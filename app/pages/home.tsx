@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
-  Animated,
 } from "react-native";
 import { Text, Divider, Icon } from "@rneui/themed";
 import Card from "../components/Card";
@@ -19,7 +18,7 @@ import Animated, {
   withRepeat,
   withTiming,
 } from "react-native-reanimated";
-import { useUser } from "../constants/user-context";
+import { useUser } from "../hooks/useUserContext";
 
 const sections = [
   // { title: "Products" },
@@ -87,7 +86,9 @@ const Home: React.FC = () => {
                   onPress={() =>
                     router.push({
                       pathname: "/pages/ProductView",
-                      params: { product: JSON.stringify(product) },
+                      params: {
+                        productID: JSON.stringify(product.id),
+                      },
                     })
                   }
                 >
@@ -95,7 +96,15 @@ const Home: React.FC = () => {
                 </TouchableOpacity>
               ))}
 
-              <TouchableOpacity style={styles.showMore}>
+              <TouchableOpacity
+                style={styles.showMore}
+                onPress={() =>
+                  router.push({
+                    pathname: "/pages/ShowMore", // Update this path to the relevant page for showing more
+                    params: { sectionTitle: section.title }, // Pass section.title as parameter
+                  })
+                }
+              >
                 <Animated.View style={animatedStyle}>
                   <Icon
                     name="arrow-right"

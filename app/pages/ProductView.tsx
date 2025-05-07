@@ -4,61 +4,79 @@ import {
   StyleSheet,
   TouchableOpacity,
   Linking,
-  Animated,
   Image,
+  ScrollView,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { WebView } from "react-native-webview";
 import { Icon } from "@rneui/themed";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ProductType } from "../types/product-type";
-import { useRouter } from "expo-router";
+import axios from "axios";
+import { useUser } from "../hooks/useUserContext";
+
+const BASE_URL = "https://snaptap.up.railway.app"; // <-- Your backend URL
 
 const ProductView = () => {
-  const router = useRouter();
-
-  const isLoggedIn = false; // Replace this with actual auth state
-
-  const scrollY = useRef(new Animated.Value(0)).current;
-  const [isFavorite, setIsFavorite] = useState(false);
+  const { productID } = useLocalSearchParams();
+  const [product, setProduct] = useState<ProductType | null>(null);
+  const [loading, setLoading] = useState(true);
   const [userRating, setUserRating] = useState(0);
   const router = useRouter();
+  const { user, isLoggedIn } = useUser();
 
-  const { product } = useLocalSearchParams();
-  const parsedProduct: ProductType | null = product
-    ? JSON.parse(product as string)
-    : null;
+  const userId = isLoggedIn ? user?.id : "";
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await axios.get(
+          `${BASE_URL}/api/products/product-detail/${productID}?userId=${userId}`
+        );
+        setProduct(response.data);
+      } catch (error) {
+        console.error("Failed to fetch product details:", error);
+        Alert.alert("Error", "Unable to load product details.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const webViewHeight = scrollY.interpolate({
-    inputRange: [0, 300],
-    outputRange: [400, 200],
-    extrapolate: "clamp",
-  });
+    if (productID) {
+      fetchProduct();
+    }
+  }, [productID]);
 
-  if (!parsedProduct) {
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#00A8DE" />
+      </View>
+    );
+  }
+
+  if (!product) {
     return (
       <View style={styles.container}>
         <Text style={{ textAlign: "center", marginTop: 50 }}>
-          No Product Data
+          Product not found.
         </Text>
       </View>
     );
   }
 
-  const handleFavoritePress = () => {
-    if (!isLoggedIn) {
+  const handleFavoritePress = async () => {
+    if (!isLoggedIn || !user?.id) {
       Alert.alert(
         "Login Required",
-        "You need to log in or sign up to add this item to favorites.",
+        "To add products to favorites, you must log in first.",
         [
           { text: "Cancel", style: "cancel" },
           {
             text: "Login",
             onPress: () => {
-              router.push({
-                pathname: "/pages/Login",
-              });
+              router.push({ pathname: "/pages/Login" });
             },
           },
         ]
@@ -66,11 +84,29 @@ const ProductView = () => {
       return;
     }
 
-    setIsFavorite(!isFavorite);
-    Alert.alert(
-      "Success",
-      isFavorite ? "Removed from favorites" : "Added to favorites"
-    );
+    try {
+      const isCurrentlyFavorite = product?.is_favorite;
+      const url = isCurrentlyFavorite
+        ? `${BASE_URL}/api/favorites/unset-favorite/${user.id}/${product.id}`
+        : `${BASE_URL}/api/favorites/set-favorite/${user.id}/${product.id}`;
+      const method = isCurrentlyFavorite ? "delete" : "post";
+
+      await axios({ method, url });
+      // Update local product state after backend success
+      setProduct((prevProduct) =>
+        prevProduct
+          ? { ...prevProduct, is_favorite: !isCurrentlyFavorite }
+          : prevProduct
+      );
+
+      Alert.alert(
+        "Success",
+        !isCurrentlyFavorite ? "Added to favorites" : "Removed from favorites"
+      );
+    } catch (error) {
+      console.error("Favorite toggle failed:", error);
+      Alert.alert("Error", "Something went wrong. Please try again.");
+    }
   };
 
   const handleStarPress = (rating: number) => {
@@ -79,21 +115,9 @@ const ProductView = () => {
 
   return (
     <View style={styles.container}>
-      <Animated.View style={[styles.modelContainer, { height: webViewHeight }]}>
-        <WebView
-          source={{ uri: parsedProduct.model_url }}
-          style={styles.webView}
-        />
+      <View style={styles.modelContainer}>
+        <WebView source={{ uri: product.model_url }} style={styles.webView} />
 
-        {/* Back Button */}
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
-        >
-          <Icon name="arrow-left" type="font-awesome" size={22} color="#fff" />
-        </TouchableOpacity>
-
-        {/* Favorite Button */}
         <TouchableOpacity
           style={styles.favoriteFloatingButton}
           onPress={handleFavoritePress}
@@ -102,22 +126,15 @@ const ProductView = () => {
           <Icon
             name="heart"
             type="font-awesome"
-            color={isFavorite ? "#00A8DE" : "gray"}
+            color={product.is_favorite ? "#00A8DE" : "gray"}
             size={28}
           />
         </TouchableOpacity>
-      </Animated.View>
+      </View>
 
-      <Animated.ScrollView
-        contentContainerStyle={styles.detailsContainer}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: false }
-        )}
-        scrollEventThrottle={16}
-      >
+      <ScrollView contentContainerStyle={styles.detailsContainer}>
         <View style={styles.card}>
-          <Text style={styles.title}>{parsedProduct.name}</Text>
+          <Text style={styles.title}>{product.name}</Text>
 
           <View style={styles.cardRow}>
             <View style={styles.ratingContainer}>
@@ -132,12 +149,12 @@ const ProductView = () => {
               <Text style={styles.reviewText}>(10 reviews)</Text>
             </View>
             <View style={styles.categoryBadge}>
-              <Text style={styles.categoryText}>{parsedProduct.category}</Text>
+              <Text style={styles.categoryText}>{product.category}</Text>
             </View>
           </View>
 
-          {parsedProduct.price && (
-            <Text style={styles.price}>${parsedProduct.price.toFixed(2)}</Text>
+          {product.price && (
+            <Text style={styles.price}>${product.price.toFixed(2)}</Text>
           )}
 
           <View style={styles.divider} />
@@ -159,18 +176,16 @@ const ProductView = () => {
 
         <View style={styles.descriptionCard}>
           <Text style={styles.sectionTitle}>Description</Text>
-          <Text style={styles.descriptionText}>
-            {parsedProduct.description}
-          </Text>
+          <Text style={styles.descriptionText}>{product.description}</Text>
         </View>
 
         <View style={styles.publisherCard}>
           <Text style={styles.sectionTitle}>Published By</Text>
           <View style={styles.publisherRow}>
             <Text style={styles.publisherName}>Natalie</Text>
-            {parsedProduct.image_url && (
+            {product.image_url && (
               <Image
-                source={{ uri: parsedProduct.image_url }}
+                source={{ uri: product.image_url }}
                 style={styles.publisherImage}
                 resizeMode="cover"
               />
@@ -198,7 +213,7 @@ const ProductView = () => {
             ))}
           </View>
         </View>
-      </Animated.ScrollView>
+      </ScrollView>
     </View>
   );
 };
@@ -216,21 +231,14 @@ const styles = StyleSheet.create({
   },
   modelContainer: {
     width: "100%",
+    height: 300,
     backgroundColor: "#000",
     position: "relative",
   },
   webView: {
     flex: 1,
   },
-  backButton: {
-    position: "absolute",
-    top: 40, // adjust as per status bar
-    left: 16,
-    backgroundColor: "rgba(0,0,0,0.6)",
-    padding: 10,
-    borderRadius: 30,
-    zIndex: 999,
-  },
+
   favoriteFloatingButton: {
     position: "absolute",
     bottom: 10,
@@ -261,7 +269,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    textAlign: "left",
     color: "#2e2e2e",
     marginBottom: 10,
   },
@@ -299,12 +306,11 @@ const styles = StyleSheet.create({
     fontSize: 26,
     color: "#555555",
     fontWeight: "bold",
-    textAlign: "left",
     marginVertical: 12,
   },
   divider: {
     height: 1,
-    backgroundColor: "##00A8DE",
+    backgroundColor: "#00A8DE",
     marginVertical: 12,
   },
   visitButton: {
@@ -314,10 +320,9 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1, // Add this line
-    borderColor: "#00A8DE", // And this one
+    borderWidth: 1,
+    borderColor: "#00A8DE",
   },
-
   visitButtonText: {
     color: "#00A8DE",
     fontSize: 16,
@@ -345,8 +350,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 18,
     marginBottom: 16,
-    alignItems: "flex-start",
-    flexDirection: "column",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
@@ -364,14 +367,12 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#555555",
     marginRight: 10,
-    flexWrap: "wrap",
     flex: 1,
   },
   publisherImage: {
     width: 60,
     height: 60,
     borderRadius: 30,
-    marginTop: 0,
   },
   ratingInputCard: {
     backgroundColor: "#ffffff",
@@ -395,6 +396,5 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#2e2e2e",
     marginBottom: 10,
-    textAlign: "left",
   },
 });

@@ -11,7 +11,7 @@ import {
   ScrollView,
 } from "react-native";
 import Modal from "react-native-modal";
-import { useUser } from "../constants/user-context";
+import { useUser } from "../hooks/useUserContext";
 
 const { width } = Dimensions.get("window");
 const context = useUser();
@@ -47,7 +47,7 @@ const SideMenu = ({
         <TouchableOpacity style={{ alignItems: "center" }}>
           <Image
             source={{
-              uri: user?.image_url || "https://example.com/default.png",
+              uri: user?.image_url,
             }}
             style={styles.icon}
           />

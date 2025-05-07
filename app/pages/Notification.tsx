@@ -14,7 +14,7 @@ import { Divider, Icon } from "@rneui/themed";
 import axios from "axios";
 import { NotificationType } from "../types/notification-data";
 import { BASE_URL } from "../constants/urls";
-import { useUser } from "../constants/user-context";
+import { useUser } from "../hooks/useUserContext";
 
 export default function NotificationsScreen() {
   const router = useRouter();

@@ -8,25 +8,16 @@ import {
   Image,
   Animated,
   TouchableWithoutFeedback,
-  Alert,
 } from "react-native";
 import { Icon, Input } from "@rneui/themed";
-import axios from "axios";
-import { BASE_URL } from "../constants/urls";
-import { UserDataType } from "../types/user-data";
-
-const defaultUser: UserDataType = {
-  id: 1,
-  username: "JohnDoe",
-  email: "john@example.com",
-  phone: "123-456-7890",
-  image_url: "example.jpg",
-};
+import { useUser } from "../hooks/useUserContext";
+import { useRouter } from "expo-router";
 
 export default function ProfileScreen() {
-  const [user, setUser] = useState<UserDataType>(defaultUser);
+  const router = useRouter();
+
+  const { user } = useUser(); // ✅ Access user from context
   const [menuVisible, setMenuVisible] = useState(false);
-  const [isEditing, setIsEditing] = useState(true);
   const menuOpacity = useRef(new Animated.Value(0)).current;
 
   const toggleMenu = () => {
@@ -49,27 +40,15 @@ export default function ProfileScreen() {
     }
   };
 
-  const handleUpdate = async () => {
-    try {
-      const response = await axios.put(
-        `${BASE_URL}/api/users/${user.id}`,
-        user
-      );
-      // console.log("User updated:", response.data);
-      Alert.alert("Success", "Profile updated successfully");
-    } catch (error) {
-      console.error("Update failed", error);
-      Alert.alert("Error", "Failed to update profile");
-    }
-  };
-
   return (
     <TouchableWithoutFeedback onPress={closeMenu}>
       <SafeAreaView style={styles.container}>
         <View style={styles.profileContainer}>
           <View style={styles.profileImageWrapper}>
             <Image
-              source={require("@/assets/images/userprofile-icon.png")}
+              source={{
+                uri: user?.image_url,
+              }}
               style={styles.icon}
             />
             <View style={styles.fabContainer}>
@@ -119,12 +98,11 @@ export default function ProfileScreen() {
               <Text style={styles.label}>Username:</Text>
             </View>
             <Input
-              value={user.username}
-              onChangeText={(text) => setUser({ ...user, username: text })}
+              value={user?.username}
+              disabled
               containerStyle={styles.inputWrapper}
               inputContainerStyle={styles.inputContainer}
               inputStyle={styles.value}
-              editable={isEditing}
             />
           </View>
 
@@ -133,12 +111,11 @@ export default function ProfileScreen() {
               <Text style={styles.label}>Email:</Text>
             </View>
             <Input
-              value={user.email}
-              onChangeText={(text) => setUser({ ...user, email: text })}
+              value={user?.email}
+              disabled
               containerStyle={styles.inputWrapper}
               inputContainerStyle={styles.inputContainer}
               inputStyle={styles.value}
-              editable={isEditing}
             />
           </View>
 
@@ -147,22 +124,20 @@ export default function ProfileScreen() {
               <Text style={styles.label}>Phone:</Text>
             </View>
             <Input
-              value={user.phone}
-              onChangeText={(text) => setUser({ ...user, phone: text })}
+              value={user?.phone}
+              disabled
               containerStyle={styles.inputWrapper}
               inputContainerStyle={styles.inputContainer}
               inputStyle={styles.value}
-              editable={isEditing}
             />
           </View>
+          <TouchableOpacity
+            style={styles.editProfileButton}
+            onPress={() => router.push("/pages/EditProfileScreen")}
+          >
+            <Text style={styles.editProfileText}>Edit Profile</Text>
+          </TouchableOpacity>
         </View>
-
-        <TouchableOpacity
-          style={styles.editProfileButton}
-          onPress={handleUpdate}
-        >
-          <Text style={styles.editProfileText}>Update</Text>
-        </TouchableOpacity>
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );
@@ -174,6 +149,20 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 20,
   },
+  editProfileButton: {
+    backgroundColor: "#007bff",
+    padding: 10,
+    marginTop: 30,
+    borderRadius: 8,
+    alignSelf: "center",
+    paddingHorizontal: 20,
+  },
+  editProfileText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+
   profileContainer: {
     alignItems: "center",
     marginTop: 20,
@@ -268,19 +257,5 @@ const styles = StyleSheet.create({
   menuText: {
     fontSize: 16,
     marginLeft: 10,
-  },
-  editProfileButton: {
-    backgroundColor: "#007bff",
-    paddingVertical: 12,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 40,
-    marginHorizontal: 10,
-  },
-  editProfileText: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
   },
 });

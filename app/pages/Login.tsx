@@ -11,21 +11,24 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import axios from "axios";
-import { BASE_URL } from "../constants/urls"; // Ensure BASE_URL is correctly defined
-import { useUser } from "../constants/user-context";
+import { BASE_URL } from "../constants/urls";
+import { useUser } from "../hooks/useUserContext";
+import { Ionicons } from "@expo/vector-icons";
 
 const Login = () => {
   const context = useUser();
+  const { setUser, user } = context;
 
-  const [username, setUsername] = useState(""); // Changed from email to username
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [showPassword, setShowPassword] = useState(false);
+
   const [showLoginForm, setShowLoginForm] = useState(false);
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const router = useRouter();
 
-  const { setUser, user } = context;
   useEffect(() => {
-    // Start fade out after 0.2 seconds
     setTimeout(() => {
       Animated.timing(fadeAnim, {
         toValue: 0,
@@ -38,24 +41,22 @@ const Login = () => {
   }, []);
 
   const handleLogin = async () => {
-    if (!username || !password) {
-      Alert.alert("Error", "Please enter both username and password.");
-      return;
-    }
+    const newErrors: typeof errors = {};
+    if (!username) newErrors.username = "Username is required.";
+    if (!password) newErrors.password = "Password is required.";
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
 
     try {
-      // Make API request with username and password in URL
       const response = await axios.get(
         `${BASE_URL}/api/users/allow-customer-login/${username}/${password}`
       );
 
       if (response.data.id) {
         setUser(response.data);
-        // If valid, log the user in
         Alert.alert("Success", "Logged in successfully.");
         router.replace("/");
       } else {
-        // If invalid username or password
         Alert.alert("Error", "Invalid username or password.");
       }
     } catch (error) {
@@ -91,20 +92,42 @@ const Login = () => {
             onChangeText={setUsername}
             autoCapitalize="none"
           />
+          {errors.username && (
+            <Text style={styles.errorText}>{errors.username}</Text>
+          )}
 
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            placeholderTextColor="#999"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-          />
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              placeholder="Password"
+              placeholderTextColor="#999"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={!showPassword}
+            />
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+              <Ionicons
+                name={showPassword ? "eye-off" : "eye"}
+                size={24}
+                color="#666"
+              />
+            </TouchableOpacity>
+          </View>
+          {errors.password && (
+            <Text style={styles.errorText}>{errors.password}</Text>
+          )}
 
           <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
             <Text style={styles.loginText}>Log In</Text>
           </TouchableOpacity>
-
+          <View style={styles.sign}>
+            <Text style={styles.signtext}>Create a New Account? </Text>
+            <TouchableOpacity
+              onPress={() => router.push("/pages/SignUpScreen")}
+            >
+              <Text style={styles.signupLink}>Sign-Up</Text>
+            </TouchableOpacity>
+          </View>
           <View style={styles.footer}>
             <Text style={styles.footerText}>
               © 2025 SnapTap. All rights reserved.
@@ -119,6 +142,21 @@ const Login = () => {
 export default Login;
 
 const styles = StyleSheet.create({
+  sign: {
+    marginTop: 20,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  signtext: {
+    fontSize: 14,
+    color: "#555",
+  },
+  signupLink: {
+    fontSize: 14,
+    color: "#00A8DE",
+    fontWeight: "600",
+  },
   container: {
     flex: 1,
     backgroundColor: "#e6f0fa",
@@ -137,10 +175,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 10,
     paddingHorizontal: 16,
-    marginBottom: 20,
+    marginBottom: 10,
     fontSize: 16,
     borderWidth: 1,
     borderColor: "#ccc",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 13,
+    marginBottom: 8,
+    marginLeft: 5,
   },
   loginButton: {
     backgroundColor: "#0077cc",
@@ -148,6 +192,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     marginBottom: 20,
+    marginTop: 10,
   },
   loginText: {
     color: "#fff",
@@ -182,5 +227,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#e6f0fa",
     zIndex: 1,
+  },
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: "#ccc",
+  },
+  passwordInput: {
+    flex: 1,
+    height: 50,
+    fontSize: 16,
   },
 });

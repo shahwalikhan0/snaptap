@@ -1,27 +1,32 @@
 import { Stack } from "expo-router";
-import { UserProvider } from "./constants/user-context";
+import { UserProvider } from "./hooks/useUserContext";
 
 export default function RootLayout() {
   return (
     <UserProvider>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen
-          name="pages/Home"
+          name="pages/home"
           options={{
             headerTitle: "SnapTap",
-            gestureEnabled: false,
             animationTypeForReplace: "pop",
+            gestureDirection: "horizontal",
+            gestureEnabled: false, // This disables swipe-back on iOS
           }}
-        />
-        <Stack.Screen
-          name="product-view"
-          options={{ headerTitle: "Product Details" }}
         />
         <Stack.Screen
           name="pages/ProductView"
           options={{
             headerShown: true,
             headerTitle: "Product View",
+            headerBackTitle: "Back",
+          }}
+        />
+        <Stack.Screen
+          name="pages/Search"
+          options={{
+            headerShown: true,
+            headerTitle: "Search",
             headerBackTitle: "Back",
           }}
         />
@@ -33,18 +38,8 @@ export default function RootLayout() {
             headerBackTitle: "Back",
           }}
         />
-        <Stack.Screen
-          name="pages/Login"
-          options={{
-            headerShown: true,
-            headerTitle: "Login",
-            headerBackTitle: "Back",
-          }}
-        />
-        <Stack.Screen
-          name="model-viewer"
-          options={{ headerTitle: "3D Viewer" }}
-        />
+        <Stack.Screen name="pages/Login" />
+
         <Stack.Screen
           name="pages/Notification"
           options={{
