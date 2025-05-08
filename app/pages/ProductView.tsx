@@ -14,8 +14,9 @@ import { Icon } from "@rneui/themed";
 import React, { useEffect, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ProductType } from "../types/product-type";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useUser } from "../hooks/useUserContext";
+import { Modal, TextInput } from "react-native";
 
 const BASE_URL = "https://snaptap.up.railway.app"; // <-- Your backend URL
 
@@ -26,25 +27,51 @@ const ProductView = () => {
   const [userRating, setUserRating] = useState(0);
   const router = useRouter();
   const { user, isLoggedIn } = useUser();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [feedbackTitle, setFeedbackTitle] = useState("");
+  const [feedbackMessage, setFeedbackMessage] = useState("");
 
   const userId = isLoggedIn ? user?.id : "";
+
   useEffect(() => {
-    const fetchProduct = async () => {
+    const fetchProductAndFeedback = async () => {
       try {
+        // Fetch product
         const response = await axios.get(
           `${BASE_URL}/api/products/product-detail/${productID}?userId=${userId}`
         );
         setProduct(response.data);
+
+        // Fetch feedback
+        if (userId && productID) {
+          const feedbackResponse = await axios.get(
+            `${BASE_URL}/api/feedbacks/user-feedback/${userId}/${productID}`
+          );
+          const feedback = feedbackResponse.data;
+          if (feedback != null) {
+            setUserRating(feedback.current_rating);
+            setFeedbackTitle(feedback.title);
+            setFeedbackMessage(feedback.message);
+          } else {
+            setUserRating(0);
+            setFeedbackTitle("");
+            setFeedbackMessage("");
+          }
+        }
       } catch (error) {
-        console.error("Failed to fetch product details:", error);
-        Alert.alert("Error", "Unable to load product details.");
+        const err = error as AxiosError;
+        console.error(
+          "Error loading product or feedback:",
+          err.response?.data || err.message
+        );
+        Alert.alert("Error", "Unable to load product or feedback.");
       } finally {
         setLoading(false);
       }
     };
 
     if (productID) {
-      fetchProduct();
+      fetchProductAndFeedback();
     }
   }, [productID]);
 
@@ -65,6 +92,58 @@ const ProductView = () => {
       </View>
     );
   }
+  const handleStarPress = (rating: number) => {
+    if (!isLoggedIn || !user?.id) {
+      Alert.alert(
+        "Login Required",
+        "To add rating and feedback, you must log in first.",
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Login",
+            onPress: () => {
+              router.push({ pathname: "/pages/Login" });
+            },
+          },
+        ]
+      );
+      return;
+    }
+    setUserRating(rating);
+    setIsModalVisible(true);
+  };
+  const submitFeedback = async () => {
+    if (!feedbackTitle || !feedbackMessage) {
+      Alert.alert("Incomplete", "Please provide both title and message.");
+      return;
+    }
+
+    try {
+      const payload = {
+        user_id: String(userId),
+        product_id: String(productID),
+        current_rating: userRating ?? 0,
+        title: feedbackTitle,
+        message: feedbackMessage,
+      };
+
+      console.log(payload);
+
+      await axios.post(`${BASE_URL}/api/feedbacks/create`, payload, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      Alert.alert("Thank you!", "Your feedback has been submitted.");
+      setIsModalVisible(false);
+      setFeedbackTitle("");
+      setFeedbackMessage("");
+    } catch (error) {
+      console.error("Feedback submission failed:", error);
+      Alert.alert("Error", "Could not submit feedback. Please try again.");
+    }
+  };
 
   const handleFavoritePress = async () => {
     if (!isLoggedIn || !user?.id) {
@@ -109,14 +188,17 @@ const ProductView = () => {
     }
   };
 
-  const handleStarPress = (rating: number) => {
-    setUserRating(rating);
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.modelContainer}>
-        <WebView source={{ uri: product.model_url }} style={styles.webView} />
+        <WebView
+          originWhitelist={["*"]}
+          javaScriptEnabled={true}
+          domStorageEnabled={true}
+          source={{ uri: product.model_url }}
+          style={{ height: 300, width: "100%" }}
+          startInLoadingState={true}
+        />
 
         <TouchableOpacity
           style={styles.favoriteFloatingButton}
@@ -132,7 +214,10 @@ const ProductView = () => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView contentContainerStyle={styles.detailsContainer}>
+      <ScrollView
+        key="details-scroll"
+        contentContainerStyle={styles.detailsContainer}
+      >
         <View style={styles.card}>
           <Text style={styles.title}>{product.name}</Text>
 
@@ -173,12 +258,49 @@ const ProductView = () => {
             <Text style={styles.visitButtonText}>Visit Website</Text>
           </TouchableOpacity>
         </View>
-
         <View style={styles.descriptionCard}>
           <Text style={styles.sectionTitle}>Description</Text>
           <Text style={styles.descriptionText}>{product.description}</Text>
         </View>
-
+        <View style={styles.publisherCard}>
+          <Text style={styles.sectionTitle}>Published By</Text>
+          <View style={styles.publisherRow}>
+            <Text style={styles.publisherName}>Natalie</Text>
+            {product.image_url && (
+              <Image
+                source={{ uri: product.image_url }}
+                style={styles.publisherImage}
+                resizeMode="cover"
+              />
+            )}
+          </View>
+        </View>
+        <View style={styles.publisherCard}>
+          <Text style={styles.sectionTitle}>Published By</Text>
+          <View style={styles.publisherRow}>
+            <Text style={styles.publisherName}>Natalie</Text>
+            {product.image_url && (
+              <Image
+                source={{ uri: product.image_url }}
+                style={styles.publisherImage}
+                resizeMode="cover"
+              />
+            )}
+          </View>
+        </View>
+        <View style={styles.publisherCard}>
+          <Text style={styles.sectionTitle}>Published By</Text>
+          <View style={styles.publisherRow}>
+            <Text style={styles.publisherName}>Natalie</Text>
+            {product.image_url && (
+              <Image
+                source={{ uri: product.image_url }}
+                style={styles.publisherImage}
+                resizeMode="cover"
+              />
+            )}
+          </View>
+        </View>
         <View style={styles.publisherCard}>
           <Text style={styles.sectionTitle}>Published By</Text>
           <View style={styles.publisherRow}>
@@ -195,7 +317,9 @@ const ProductView = () => {
 
         <View style={styles.ratingInputCard}>
           <Text style={styles.sectionTitle}>Your Rating</Text>
-          <View style={styles.starsRow}>
+          <View
+          // style={styles.starsRow}
+          >
             {[1, 2, 3, 4, 5].map((star) => (
               <TouchableOpacity
                 key={star}
@@ -214,15 +338,48 @@ const ProductView = () => {
           </View>
         </View>
       </ScrollView>
+      <Modal
+        visible={isModalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setIsModalVisible(false)}
+        presentationStyle="overFullScreen"
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>Submit Feedback</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Feedback Title"
+              value={feedbackTitle}
+              onChangeText={setFeedbackTitle}
+            />
+            <TextInput
+              style={[styles.input, { height: 100 }]}
+              placeholder="Feedback Message"
+              value={feedbackMessage}
+              onChangeText={setFeedbackMessage}
+              multiline
+            />
+
+            <TouchableOpacity
+              style={styles.submitButton}
+              onPress={submitFeedback}
+            >
+              <Text style={styles.submitButtonText}>Submit</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => setIsModalVisible(false)}>
+              <Text style={styles.cancelText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
 
 export default ProductView;
-
-ProductView.options = {
-  headerShown: false,
-};
 
 const styles = StyleSheet.create({
   container: {
@@ -234,9 +391,6 @@ const styles = StyleSheet.create({
     height: 300,
     backgroundColor: "#000",
     position: "relative",
-  },
-  webView: {
-    flex: 1,
   },
 
   favoriteFloatingButton: {
@@ -255,6 +409,58 @@ const styles = StyleSheet.create({
   detailsContainer: {
     padding: 16,
   },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1000, // ensure it's above other elements
+  },
+
+  modalContainer: {
+    width: "85%",
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    padding: 20,
+    elevation: 10,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 12,
+    color: "#333",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 12,
+    fontSize: 16,
+  },
+  submitButton: {
+    backgroundColor: "#00A8DE",
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  submitButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  cancelText: {
+    color: "#888",
+    fontSize: 14,
+    textAlign: "center",
+  },
+
   card: {
     backgroundColor: "#ffffff",
     borderRadius: 16,
