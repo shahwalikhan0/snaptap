@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   SafeAreaView,
+  Dimensions,
 } from "react-native";
 import axios from "axios";
 import { useRouter } from "expo-router";
@@ -23,16 +24,15 @@ const SearchScreen = () => {
   const [isFocused, setIsFocused] = useState(false);
   const router = useRouter();
 
-  const { type } = useLocalSearchParams(); // ⬅️ Read `type=brand` or `product`
-
+  const { type } = useLocalSearchParams();
   const handleSearch = async () => {
     if (!searchKey.trim()) return;
     try {
       setLoading(true);
       const endpoint =
-        type === "brand"
-          ? `${BASE_URL}/api/products/search/${searchKey}`
-          : `${BASE_URL}/api/brands/search/${searchKey}`;
+        type === "product"
+          ? `${BASE_URL}/api/products/search/${searchKey.trim()}`
+          : `${BASE_URL}/api/brands/search/${searchKey.trim()}`;
       const response = await axios.get(endpoint);
       setResults(response.data);
     } catch (error) {
@@ -43,17 +43,10 @@ const SearchScreen = () => {
   };
 
   const renderItem = ({ item }: { item: ProductType }) => (
-    <TouchableOpacity
-      style={styles.cardWrapper}
-      onPress={() =>
-        router.push({
-          pathname: "/pages/ProductView",
-          params: { product: JSON.stringify(item) },
-        })
-      }
-    >
-      <Card data={item} width={160} />
-    </TouchableOpacity>
+    <View style={styles.cardWrapper}>
+      <Card data={item} width={Dimensions.get("window").width - 32} />
+      {/* Full width with padding */}
+    </View>
   );
 
   return (
@@ -87,8 +80,6 @@ const SearchScreen = () => {
           data={results}
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderItem}
-          numColumns={2}
-          columnWrapperStyle={styles.row}
           ItemSeparatorComponent={() => <View style={styles.rowDivider} />}
           contentContainerStyle={{ paddingBottom: 20 }}
         />
@@ -137,8 +128,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   cardWrapper: {
-    flex: 1,
-    alignItems: "center",
-    marginBottom: 8,
+    marginBottom: 12,
+    paddingHorizontal: 16,
   },
 });

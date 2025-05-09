@@ -4,7 +4,7 @@ import { UserDataType } from "../types/user-data";
 type UserContextType = {
   user: UserDataType | null;
   isLoggedIn: Boolean;
-  setUser: (user: UserDataType) => void;
+  setUser: (user: UserDataType | null) => void;
 };
 
 export const UserContext = createContext<UserContextType>({

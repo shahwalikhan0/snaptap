@@ -61,7 +61,7 @@ export default function FavouritesScreen() {
         })
       }
     >
-      <Card data={item} width={160} />
+      <Card data={item} width={170} />
     </TouchableOpacity>
   );
 

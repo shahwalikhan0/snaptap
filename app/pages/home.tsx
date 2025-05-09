@@ -92,7 +92,7 @@ const Home: React.FC = () => {
                     })
                   }
                 >
-                  <Card data={product} width={150} />
+                  <Card data={product} width={300} />
                 </TouchableOpacity>
               ))}
 
@@ -124,7 +124,7 @@ const Home: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "lightgrey" },
+  container: { flex: 1, backgroundColor: "white" },
   content: { paddingHorizontal: 10 },
   heading: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
   showMore: {

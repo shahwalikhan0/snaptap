@@ -18,14 +18,12 @@ const HomeHeader: React.FC<{
   setSelectedItem: (item: string) => void;
 }> = ({ openMenu, setSelectedItem }) => {
   const router = useRouter();
-  const context = useUser();
-  const { user } = context;
+  const user = useUser();
 
   const [showDropdown, setShowDropdown] = useState(false);
-  const isLoggedIn = !!user;
 
   const handleOpenMenu = () => {
-    if (isLoggedIn) {
+    if (user.isLoggedIn) {
       openMenu();
     } else {
       Alert.alert("Error", "Please login!!!.");
@@ -33,10 +31,12 @@ const HomeHeader: React.FC<{
   };
 
   const handleNotificationPress = () => {
-    if (isLoggedIn) {
+    if (user.isLoggedIn) {
       router.push({
         pathname: "/pages/Notification",
       });
+    } else {
+      Alert.alert("Error", "Please login!!!.");
     }
   };
 
@@ -46,6 +46,7 @@ const HomeHeader: React.FC<{
 
   const handleSearchOption = (type: "brand" | "product") => {
     setShowDropdown(false);
+    console.log(type);
     router.push(`/pages/Search?type=${type}`);
   };
 

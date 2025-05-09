@@ -30,6 +30,7 @@ const ProductView = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [feedbackTitle, setFeedbackTitle] = useState("");
   const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [isFeedbackExisting, setIsFeedbackExisting] = useState(false);
 
   const userId = isLoggedIn ? user?.id : "";
 
@@ -52,10 +53,12 @@ const ProductView = () => {
             setUserRating(feedback.current_rating);
             setFeedbackTitle(feedback.title);
             setFeedbackMessage(feedback.message);
+            setIsFeedbackExisting(true); // ✅ Feedback exists
           } else {
             setUserRating(0);
             setFeedbackTitle("");
             setFeedbackMessage("");
+            setIsFeedbackExisting(false); // ✅ No feedback yet
           }
         }
       } catch (error) {
@@ -112,6 +115,39 @@ const ProductView = () => {
     setUserRating(rating);
     setIsModalVisible(true);
   };
+  const updateFeedback = async () => {
+    if (!feedbackTitle || !feedbackMessage) {
+      Alert.alert("Incomplete", "Please provide both title and message.");
+      return;
+    }
+
+    try {
+      const payload = {
+        user_id: String(userId),
+        product_id: String(productID),
+        current_rating: userRating ?? 0,
+        title: feedbackTitle,
+        message: feedbackMessage,
+      };
+
+      console.log(payload);
+
+      await axios.put(`${BASE_URL}/api/feedbacks/update`, payload, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      Alert.alert("Updated", "Your feedback has been updated.");
+      setIsModalVisible(false);
+      setFeedbackTitle("");
+      setFeedbackMessage("");
+    } catch (error) {
+      console.error("Feedback update failed:", error);
+      Alert.alert("Error", "Could not update feedback. Please try again.");
+    }
+  };
+
   const submitFeedback = async () => {
     if (!feedbackTitle || !feedbackMessage) {
       Alert.alert("Incomplete", "Please provide both title and message.");
@@ -230,8 +266,8 @@ const ProductView = () => {
                 size={18}
                 style={{ marginRight: 5 }}
               />
-              <Text style={styles.ratingText}>4.6</Text>
-              <Text style={styles.reviewText}>(10 reviews)</Text>
+              <Text style={styles.ratingText}>{product.rating}</Text>
+              {/* <Text style={styles.reviewText}>(10 reviews)</Text> */}
             </View>
             <View style={styles.categoryBadge}>
               <Text style={styles.categoryText}>{product.category}</Text>
@@ -262,45 +298,7 @@ const ProductView = () => {
           <Text style={styles.sectionTitle}>Description</Text>
           <Text style={styles.descriptionText}>{product.description}</Text>
         </View>
-        <View style={styles.publisherCard}>
-          <Text style={styles.sectionTitle}>Published By</Text>
-          <View style={styles.publisherRow}>
-            <Text style={styles.publisherName}>Natalie</Text>
-            {product.image_url && (
-              <Image
-                source={{ uri: product.image_url }}
-                style={styles.publisherImage}
-                resizeMode="cover"
-              />
-            )}
-          </View>
-        </View>
-        <View style={styles.publisherCard}>
-          <Text style={styles.sectionTitle}>Published By</Text>
-          <View style={styles.publisherRow}>
-            <Text style={styles.publisherName}>Natalie</Text>
-            {product.image_url && (
-              <Image
-                source={{ uri: product.image_url }}
-                style={styles.publisherImage}
-                resizeMode="cover"
-              />
-            )}
-          </View>
-        </View>
-        <View style={styles.publisherCard}>
-          <Text style={styles.sectionTitle}>Published By</Text>
-          <View style={styles.publisherRow}>
-            <Text style={styles.publisherName}>Natalie</Text>
-            {product.image_url && (
-              <Image
-                source={{ uri: product.image_url }}
-                style={styles.publisherImage}
-                resizeMode="cover"
-              />
-            )}
-          </View>
-        </View>
+
         <View style={styles.publisherCard}>
           <Text style={styles.sectionTitle}>Published By</Text>
           <View style={styles.publisherRow}>
@@ -364,9 +362,11 @@ const ProductView = () => {
 
             <TouchableOpacity
               style={styles.submitButton}
-              onPress={submitFeedback}
+              onPress={isFeedbackExisting ? updateFeedback : submitFeedback}
             >
-              <Text style={styles.submitButtonText}>Submit</Text>
+              <Text style={styles.submitButtonText}>
+                {isFeedbackExisting ? "Update" : "Submit"}
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => setIsModalVisible(false)}>

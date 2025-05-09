@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     resizeMode: "contain",
-    borderRadius: 50,
+    borderRadius: 100,
   },
   fabContainer: {
     position: "absolute",

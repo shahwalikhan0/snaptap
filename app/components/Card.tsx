@@ -19,6 +19,7 @@ const Card = (props: { width: number; data: ProductType }) => {
       params: { productID: JSON.stringify(props.data.id) },
     });
   };
+
   return (
     <TouchableOpacity>
       <Pressable
@@ -27,16 +28,37 @@ const Card = (props: { width: number; data: ProductType }) => {
         style={[styles.card, { width: props.width }]}
         onPress={navigateToProductView}
       >
-        {/* Background Image */}
+        {/* Upper 60% - Image */}
         {props.data.image_url && (
           <Image source={{ uri: props.data.image_url }} style={styles.image} />
         )}
 
-        {/* Overlay */}
-        <View style={styles.overlay}>
-          <Text style={[styles.bottomText]}>
-            {isHovered ? "View Details" : props.data.name}
-          </Text>
+        {/* Lower 40% - Content */}
+        <View style={styles.bottomContent}>
+          <View style={styles.rowContent}>
+            {/* Left Side - Text */}
+            <View style={styles.textContainer}>
+              <Text
+                style={styles.nameText}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                {props.data.name}
+              </Text>
+              <Text
+                style={styles.descriptionText}
+                numberOfLines={2}
+                ellipsizeMode="tail"
+              >
+                {props.data.description}
+              </Text>
+            </View>
+
+            {/* Right Side - Badge */}
+            <View style={styles.categoryBadge}>
+              <Text style={styles.categoryText}>{props.data.category}</Text>
+            </View>
+          </View>
         </View>
       </Pressable>
     </TouchableOpacity>
@@ -48,45 +70,64 @@ export default Card;
 const styles = StyleSheet.create({
   card: {
     height: 200,
-    backgroundColor: "#fff", // white background makes shadows visible
+    backgroundColor: "#fff",
     borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
+    overflow: "hidden",
     marginRight: 10,
-    overflow: "visible", // IMPORTANT: allow shadow to show
-    position: "relative",
-
-    // Adjust shadow to make it visible around the whole card
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 10 }, // Change offset to balance shadow above and below
-    shadowOpacity: 0.2, // Increase opacity for a more prominent shadow
-    shadowRadius: 15, // Larger radius for softer shadow edges
-    elevation: 5, // Ensure shadow is visible on Android too
-  },
-
-  content: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.2,
+    shadowRadius: 15,
+    elevation: 5,
+    flexDirection: "column",
   },
   image: {
-    width: "100%", // Ensure the image width is 100% of the card's width
-    height: "100%", // Ensure the image height is 100% of the card's height
-    resizeMode: "cover", // 'cover' ensures the image fills the card and maintains its aspect ratio
-    borderRadius: 10, // If you want rounded corners like the card, make sure the image follows suit
-    zIndex: 0, // Keep it behind the overlay text
+    width: "100%",
+    height: "60%", // 60% for image
+    resizeMode: "cover",
   },
-  overlay: {
-    flex: 1,
+  bottomContent: {
+    height: "40%", // 40% for content
+    backgroundColor: "#f0faff",
+    paddingHorizontal: 10,
+    paddingVertical: 8,
     justifyContent: "center",
-    alignItems: "center",
-    zIndex: 1, // text stays on top
   },
-  bottomText: {
-    position: "absolute",
-    bottom: 10,
-    fontSize: 18,
-    textAlign: "center",
-    color: "black",
+  rowContent: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+  },
+  textContainer: {
+    flex: 1,
+    paddingRight: 10,
+  },
+  nameText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#000",
+    marginBottom: 4,
+  },
+  descriptionText: {
+    fontSize: 14,
+    color: "#444",
+  },
+  categoryBadge: {
+    backgroundColor: "#d1ecf9",
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 12,
+    alignSelf: "flex-start",
+  },
+  categoryText: {
+    fontSize: 14,
+    color: "#0077cc",
+    fontWeight: "500",
+  },
+  nameBadgeRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 8,
   },
 });

@@ -12,9 +12,9 @@ import {
 } from "react-native";
 import Modal from "react-native-modal";
 import { useUser } from "../hooks/useUserContext";
+import { router } from "expo-router";
 
 const { width } = Dimensions.get("window");
-const context = useUser();
 
 // const { user } = context;
 
@@ -27,7 +27,7 @@ const SideMenu = ({
   closeMenu: () => void;
   setSelectedItem: (item: string) => void;
 }) => {
-  const { user } = useUser(); // ✅ Hook used properly inside component
+  const { user, setUser } = useUser(); // ✅ Hook used properly inside component
 
   const handleItemClick = (item: string) => {
     setSelectedItem(item);
@@ -101,7 +101,10 @@ const SideMenu = ({
         <View style={styles.footerButtons}>
           <TouchableOpacity
             style={styles.logoutButton}
-            onPress={() => handleItemClick(MENU_ITEMS.HOME)}
+            onPress={() => {
+              setUser(null);
+              closeMenu();
+            }}
           >
             <Text style={styles.logoutText}>Log Out</Text>
           </TouchableOpacity>
