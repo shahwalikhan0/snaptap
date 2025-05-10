@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   View,
-  ScrollView,
+  FlatList,
   StyleSheet,
   ActivityIndicator,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import { Text } from "@rneui/themed";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import axios from "axios";
 import { BASE_URL } from "../constants/urls";
 import { ProductType } from "../types/product-type";
@@ -19,7 +20,14 @@ const ShowMore: React.FC = () => {
   const [products, setProducts] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>();
-
+  const navigation = useNavigation();
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: () => (
+        <Text style={styles.heading}>More in {sectionTitle}</Text>
+      ),
+    });
+  }, [navigation, sectionTitle]);
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -38,6 +46,24 @@ const ShowMore: React.FC = () => {
     fetchProducts();
   }, []);
 
+  const renderItem = ({ item }: { item: ProductType }) => (
+    <TouchableOpacity
+      style={styles.cardWrapper}
+      onPress={() =>
+        router.push({
+          pathname: "/pages/ProductView",
+          params: { product: JSON.stringify(item) },
+        })
+      }
+    >
+      <Card
+        data={item}
+        width={Dimensions.get("window").width - 32}
+        type="product"
+      />
+    </TouchableOpacity>
+  );
+
   if (loading) {
     return (
       <View style={styles.center}>
@@ -55,46 +81,39 @@ const ShowMore: React.FC = () => {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <Text style={styles.heading}>More in {sectionTitle}</Text>
-      <View style={styles.grid}>
-        {products.map((product, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.cardWrapper}
-            onPress={() =>
-              router.push({
-                pathname: "/pages/ProductView",
-                params: { product: JSON.stringify(product) },
-              })
-            }
-          >
-            <Card data={product} width={150} />
-          </TouchableOpacity>
-        ))}
-      </View>
-    </ScrollView>
+    <FlatList
+      data={products}
+      renderItem={renderItem}
+      keyExtractor={(item) => item.id.toString()}
+      contentContainerStyle={styles.container}
+      ItemSeparatorComponent={() => <View style={styles.rowDivider} />}
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  scrollContainer: {
-    paddingHorizontal: 10,
+  rowDivider: {
+    height: 1,
+    backgroundColor: "#ccc",
+    marginVertical: 8,
+  },
+
+  container: {
+    paddingHorizontal: 16,
     paddingBottom: 20,
     backgroundColor: "white",
   },
   heading: {
-    fontSize: 22,
+    fontSize: 17,
     fontWeight: "bold",
-    marginVertical: 10,
-  },
-  grid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
+    marginVertical: 12,
   },
   cardWrapper: {
-    marginBottom: 15,
+    marginBottom: 10,
+    alignItems: "center",
+  },
+  separator: {
+    height: 8,
   },
   center: {
     flex: 1,

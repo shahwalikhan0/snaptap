@@ -14,7 +14,6 @@
 //   }
 export type ProductType = {
   id: number;
-  user_id: number;
   brand_id: number;
   name: string;
   description?: string;

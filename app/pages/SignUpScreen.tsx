@@ -81,19 +81,26 @@ const SignUpScreen = () => {
     form.append("name", formData.username); // Assuming you want to reuse username for name
 
     // Attach static image
-    const imageUri = Image.resolveAssetSource(
-      require("@/assets/images/icon.png")
-    ).uri;
-    const fileName = imageUri.split("/").pop();
-    const fileType = fileName?.split(".").pop();
-
     if (selectedImage) {
       form.append("image", {
         uri: selectedImage.uri,
         name: selectedImage.name,
         type: selectedImage.type,
       } as any);
+    } else {
+      const imageUri = Image.resolveAssetSource(
+        require("@/assets/images/icon.png")
+      ).uri;
+      const fileName = imageUri.split("/").pop() || "icon.png";
+      const fileType = `image/${fileName.split(".").pop()}`;
+
+      form.append("image", {
+        uri: imageUri,
+        name: fileName,
+        type: fileType,
+      } as any);
     }
+    console.log("Image sent:", selectedImage ?? "Default icon");
 
     try {
       const response = await axios.post(
@@ -121,18 +128,23 @@ const SignUpScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Image
-        source={require("@/assets/images/icon.png")}
-        style={styles.avatar}
-      />
-      <Text style={styles.title}>Create Account</Text>
-      <TouchableOpacity style={styles.button} onPress={pickImage}>
-        <Text style={styles.buttonText}>Select Image</Text>
+      <TouchableOpacity onPress={pickImage}>
+        {/* {selectedImage && ( */}
+        <Image
+          source={
+            selectedImage
+              ? { uri: selectedImage.uri }
+              : require("@/assets/images/icon.png")
+          }
+          style={styles.avatar}
+        />
+        {/* )} */}
       </TouchableOpacity>
 
-      {selectedImage && (
-        <Image source={{ uri: selectedImage.uri }} style={styles.avatar} />
-      )}
+      <Text style={styles.imageHint}>
+        Tap the image to select a profile picture
+      </Text>
+      <Text style={styles.title}>Create Account</Text>
 
       <TextInput
         style={styles.input}
@@ -227,6 +239,12 @@ const SignUpScreen = () => {
 export default SignUpScreen;
 
 const styles = StyleSheet.create({
+  imageHint: {
+    textAlign: "center",
+    color: "#777",
+    marginBottom: 20,
+    fontSize: 12,
+  },
   container: {
     flexGrow: 1,
     padding: 20,
@@ -240,6 +258,54 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginBottom: 20,
   },
+  avatarWrapper: {
+    alignSelf: "center",
+    marginBottom: 20,
+    position: "relative",
+  },
+  fabContainer: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+  },
+  fab: {
+    backgroundColor: "#00A8DE",
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 5,
+  },
+  menu: {
+    position: "absolute",
+    top: -90,
+    right: 0,
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 5,
+  },
+  menuItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 6,
+  },
+  menuText: {
+    marginLeft: 8,
+    fontSize: 14,
+    color: "#333",
+  },
+
   title: {
     fontSize: 28,
     fontWeight: "bold",

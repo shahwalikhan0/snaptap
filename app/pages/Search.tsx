@@ -41,12 +41,32 @@ const SearchScreen = () => {
       setLoading(false);
     }
   };
-
+  console.log(type);
   const renderItem = ({ item }: { item: ProductType }) => (
-    <View style={styles.cardWrapper}>
-      <Card data={item} width={Dimensions.get("window").width - 32} />
-      {/* Full width with padding */}
-    </View>
+    <TouchableOpacity
+      onPress={() => {
+        if (type === "brand") {
+          console.log("Navigating to brand/products...");
+          router.push({
+            pathname: "/pages/ViewBrandProducts",
+            params: { brandId: item.id, brandName: item.name },
+          });
+        } else {
+          router.push({
+            pathname: "/pages/ProductView",
+            params: { productId: item.id },
+          });
+        }
+      }}
+    >
+      <View style={styles.cardWrapper}>
+        <Card
+          data={item}
+          width={Dimensions.get("window").width - 32}
+          type={type === "brand" ? "brand" : "product"}
+        />
+      </View>
+    </TouchableOpacity>
   );
 
   return (

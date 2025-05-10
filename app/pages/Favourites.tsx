@@ -14,8 +14,11 @@ import Card from "../components/Card";
 import { ProductType } from "../types/product-type";
 import { BASE_URL } from "../constants/urls";
 import { useUser } from "../hooks/useUserContext";
+import { Dimensions } from "react-native";
 
 export default function FavouritesScreen() {
+  const screenWidth = Dimensions.get("window").width;
+
   const [favorites, setFavorites] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -61,12 +64,12 @@ export default function FavouritesScreen() {
         })
       }
     >
-      <Card data={item} width={170} />
+      <Card data={item} width={screenWidth - 32} type="product" />
     </TouchableOpacity>
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {loading ? (
         <ActivityIndicator
           size="large"
@@ -82,13 +85,11 @@ export default function FavouritesScreen() {
           data={favorites}
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderItem}
-          numColumns={2}
-          columnWrapperStyle={styles.row}
           ItemSeparatorComponent={() => <View style={styles.rowDivider} />}
           contentContainerStyle={{ paddingBottom: 20 }}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -121,8 +122,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   cardWrapper: {
-    flex: 1,
-    alignItems: "center",
-    marginBottom: 8,
+    paddingHorizontal: 16,
+    marginBottom: 12,
   },
 });

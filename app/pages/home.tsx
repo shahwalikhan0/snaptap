@@ -92,7 +92,7 @@ const Home: React.FC = () => {
                     })
                   }
                 >
-                  <Card data={product} width={300} />
+                  <Card data={product} width={300} type="product" />
                 </TouchableOpacity>
               ))}
 

@@ -10,28 +10,44 @@ import { useRouter } from "expo-router";
 import { Text } from "react-native";
 import { ProductType } from "../types/product-type";
 
-const Card = (props: { width: number; data: ProductType }) => {
+const Card = (props: {
+  width: number;
+  data: ProductType;
+  type: "product" | "brand";
+}) => {
   const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
-  const navigateToProductView = () => {
-    router.push({
-      pathname: "/pages/ProductView",
-      params: { productID: JSON.stringify(props.data.id) },
-    });
+
+  const handlePress = () => {
+    if (props.type === "brand") {
+      console.log(props.data.id);
+      router.push({
+        pathname: "/pages/ViewBrandProducts",
+        params: { brandID: props.data.id, brandName: props.data.name },
+      });
+    } else {
+      router.push({
+        pathname: "/pages/ProductView",
+        params: { productID: props.data.id },
+      });
+    }
   };
 
   return (
     <TouchableOpacity>
       <Pressable
-        onHoverIn={() => setIsHovered(true)}
-        onHoverOut={() => setIsHovered(false)}
         style={[styles.card, { width: props.width }]}
-        onPress={navigateToProductView}
+        onPress={handlePress}
       >
         {/* Upper 60% - Image */}
-        {props.data.image_url && (
-          <Image source={{ uri: props.data.image_url }} style={styles.image} />
-        )}
+        <Image
+          source={
+            props.data.image_url
+              ? { uri: props.data.image_url }
+              : require("@/assets/images/icon.png")
+          }
+          style={styles.image}
+        />
 
         {/* Lower 40% - Content */}
         <View style={styles.bottomContent}>
@@ -74,13 +90,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: "hidden",
     marginRight: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.2,
-    shadowRadius: 15,
-    elevation: 5,
+    shadowColor: "grey",
+    shadowOffset: { width: 0, height: 4 }, // slight vertical offset
+    shadowOpacity: 0.3, // increased opacity for depth
+    shadowRadius: 8, // softer edges
+    elevation: 8, // stronger shadow on Android
     flexDirection: "column",
   },
+
   image: {
     width: "100%",
     height: "60%", // 60% for image

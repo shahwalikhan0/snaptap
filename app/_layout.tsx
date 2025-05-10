@@ -15,6 +15,14 @@ export default function RootLayout() {
           }}
         />
         <Stack.Screen
+          name="pages/ViewBrandProducts"
+          options={{
+            headerShown: true,
+
+            headerBackTitle: "Back",
+          }}
+        />
+        <Stack.Screen
           name="pages/ProductView"
           options={{
             headerShown: true,

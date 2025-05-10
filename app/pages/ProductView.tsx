@@ -31,6 +31,7 @@ const ProductView = () => {
   const [feedbackTitle, setFeedbackTitle] = useState("");
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [isFeedbackExisting, setIsFeedbackExisting] = useState(false);
+  console.log(productID);
 
   const userId = isLoggedIn ? user?.id : "";
 
@@ -255,7 +256,14 @@ const ProductView = () => {
         contentContainerStyle={styles.detailsContainer}
       >
         <View style={styles.card}>
-          <Text style={styles.title}>{product.name}</Text>
+          <Text
+            style={styles.title}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.5}
+          >
+            {product.name}
+          </Text>
 
           <View style={styles.cardRow}>
             <View style={styles.ratingContainer}>
@@ -296,7 +304,13 @@ const ProductView = () => {
         </View>
         <View style={styles.descriptionCard}>
           <Text style={styles.sectionTitle}>Description</Text>
-          <Text style={styles.descriptionText}>{product.description}</Text>
+          <ScrollView
+            style={styles.scrollDescription}
+            showsVerticalScrollIndicator={true}
+            nestedScrollEnabled={true}
+          >
+            <Text style={styles.descriptionText}>{product.description}</Text>
+          </ScrollView>
         </View>
 
         <View style={styles.publisherCard}>
@@ -442,6 +456,9 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 12,
     fontSize: 16,
+  },
+  scrollDescription: {
+    maxHeight: 150, // ~5 lines depending on font size
   },
   submitButton: {
     backgroundColor: "#00A8DE",

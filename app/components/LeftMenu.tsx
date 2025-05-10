@@ -9,6 +9,7 @@ import {
   Image,
   Dimensions,
   ScrollView,
+  Alert,
 } from "react-native";
 import Modal from "react-native-modal";
 import { useUser } from "../hooks/useUserContext";
@@ -75,14 +76,14 @@ const SideMenu = ({
           </TouchableOpacity>
           <View style={styles.menuItemsDivider} />
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.menuItems}
             onPress={() => handleItemClick(MENU_ITEMS.SETTINGS)}
           >
             <Icon name="cog" size={20} color="black" type="font-awesome" />
             <Text>Settings</Text>
           </TouchableOpacity>
-          <View style={styles.menuItemsDivider} />
+          <View style={styles.menuItemsDivider} /> */}
 
           <TouchableOpacity
             style={styles.menuItems}
@@ -104,6 +105,7 @@ const SideMenu = ({
             onPress={() => {
               setUser(null);
               closeMenu();
+              Alert.alert("Logged Out", "You have been logged out.");
             }}
           >
             <Text style={styles.logoutText}>Log Out</Text>

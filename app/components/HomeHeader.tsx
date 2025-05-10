@@ -26,17 +26,33 @@ const HomeHeader: React.FC<{
     if (user.isLoggedIn) {
       openMenu();
     } else {
-      Alert.alert("Error", "Please login!!!.");
+      Alert.alert("Login Required", "You need to login to access the menu.", [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Login",
+          onPress: () => router.push("/pages/Login"),
+        },
+      ]);
     }
   };
 
   const handleNotificationPress = () => {
     if (user.isLoggedIn) {
-      router.push({
-        pathname: "/pages/Notification",
-      });
+      router.push("/pages/Notification");
     } else {
-      Alert.alert("Error", "Please login!!!.");
+      Alert.alert("Login Required", "Please login to view notifications.", [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Login",
+          onPress: () => router.push("/pages/Login"),
+        },
+      ]);
     }
   };
 
