@@ -46,7 +46,6 @@ const Login = () => {
     if (!password) newErrors.password = "Password is required.";
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
-
     try {
       const response = await axios.get(
         `${BASE_URL}/api/users/allow-customer-login/${username}/${password}`
@@ -54,14 +53,25 @@ const Login = () => {
 
       if (response.data.id) {
         setUser(response.data);
+
         Alert.alert("Success", "Logged in successfully.");
         router.replace("/");
       } else {
         Alert.alert("Error", "Invalid username or password.");
       }
     } catch (error) {
-      Alert.alert("Error", "An error occurred during login.");
-      console.error(error);
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.error;
+        if (errorMessage === "User not found") {
+          Alert.alert("Error", "Invalid username or password.");
+        } else {
+          Alert.alert("Error", "An error occurred during login.");
+        }
+        console.error("Login error:", errorMessage || error.message);
+      } else {
+        Alert.alert("Error", "An unexpected error occurred.");
+        console.error("Unexpected error:", error);
+      }
     }
   };
 

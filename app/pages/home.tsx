@@ -1,10 +1,11 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ScrollView,
   View,
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
+  RefreshControl,
 } from "react-native";
 import { Text, Divider, Icon } from "@rneui/themed";
 import Card from "../components/Card";
@@ -20,38 +21,43 @@ import Animated, {
 } from "react-native-reanimated";
 import { useUser } from "../hooks/useUserContext";
 
-const sections = [
-  // { title: "Products" },
-  { title: "Trending" },
-  { title: "New-Arrivals" },
-];
+const sections = [{ title: "Trending" }, { title: "New-Arrivals" }];
 
 const Home: React.FC = () => {
   const context = useUser();
   const router = useRouter();
   const [products, setProducts] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string>();
   const rotation = useSharedValue(0);
   const { user } = context;
-  useEffect(() => {
-    const fetchModelData = async () => {
-      try {
-        const response = await axios.get(`${BASE_URL}/api/products`);
-        setProducts(response.data);
-      } catch (error) {
-        console.error("Error fetching model data:", error);
-        setError("Failed to load data.");
-      } finally {
-        setLoading(false);
-      }
-    };
 
+  const fetchModelData = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/api/products`);
+      setProducts(response.data);
+      setError(undefined); // Clear error if successful
+    } catch (error) {
+      console.error("Error fetching model data:", error);
+      setError("Failed to load data.");
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
     fetchModelData();
 
     // Start spinning animation
     rotation.value = withRepeat(withTiming(360, { duration: 2000 }), -1);
   }, []);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchModelData();
+  };
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ rotate: `${rotation.value}deg` }],
@@ -75,7 +81,12 @@ const Home: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         {sections.map((section, index) => (
           <View key={index}>
             <Text style={styles.heading}>{section.title}</Text>
@@ -100,8 +111,8 @@ const Home: React.FC = () => {
                 style={styles.showMore}
                 onPress={() =>
                   router.push({
-                    pathname: "/pages/ShowMore", // Update this path to the relevant page for showing more
-                    params: { sectionTitle: section.title }, // Pass section.title as parameter
+                    pathname: "/pages/ShowMore",
+                    params: { sectionTitle: section.title },
                   })
                 }
               >
@@ -115,6 +126,7 @@ const Home: React.FC = () => {
                 </Animated.View>
               </TouchableOpacity>
             </ScrollView>
+
             <Divider style={styles.divider} />
           </View>
         ))}
@@ -138,7 +150,6 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     marginHorizontal: 10,
   },
-
   divider: { marginVertical: 15 },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   errorText: { color: "red", fontSize: 16 },

@@ -4,6 +4,7 @@ export type UserDataType = {
   email: string;
   phone: string;
   image_url?: string;
+  password?: string;
 };
 
 export type UserContextType = {

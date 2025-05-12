@@ -62,7 +62,6 @@ const HomeHeader: React.FC<{
 
   const handleSearchOption = (type: "brand" | "product") => {
     setShowDropdown(false);
-    console.log(type);
     router.push(`/pages/Search?type=${type}`);
   };
 

@@ -14,10 +14,12 @@ export default function RootLayout() {
             gestureEnabled: false, // This disables swipe-back on iOS
           }}
         />
+
         <Stack.Screen
-          name="pages/ViewBrandProducts"
+          name="pages/EditProfileScreen"
           options={{
             headerShown: true,
+            headerTitle: "Edit Profile",
 
             headerBackTitle: "Back",
           }}

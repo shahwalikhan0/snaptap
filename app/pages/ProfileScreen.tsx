@@ -41,105 +41,67 @@ export default function ProfileScreen() {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={closeMenu}>
-      <SafeAreaView style={styles.container}>
-        <View style={styles.profileContainer}>
-          <View style={styles.profileImageWrapper}>
-            <Image
-              source={{
-                uri: user?.image_url,
-              }}
-              style={styles.icon}
-            />
-            <View style={styles.fabContainer}>
-              <TouchableOpacity
-                style={styles.fab}
-                onPress={(event) => {
-                  event.stopPropagation();
-                  toggleMenu();
-                }}
-              >
-                <Icon name="camera" type="feather" color="white" size={24} />
-              </TouchableOpacity>
-              {menuVisible && (
-                <Animated.View style={[styles.menu, { opacity: menuOpacity }]}>
-                  <TouchableOpacity
-                    style={styles.menuItem}
-                    onPress={() => console.log("Upload Profile Picture")}
-                  >
-                    <Icon
-                      name="upload"
-                      type="feather"
-                      color="black"
-                      size={22}
-                    />
-                    <Text style={styles.menuText}>Upload Picture</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.menuItem}
-                    onPress={() => console.log("Delete Profile Picture")}
-                  >
-                    <Icon name="trash-2" type="feather" color="red" size={22} />
-                    <Text style={[styles.menuText, { color: "red" }]}>
-                      Delete Picture
-                    </Text>
-                  </TouchableOpacity>
-                </Animated.View>
-              )}
-            </View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.profileContainer}>
+        <View style={styles.profileImageWrapper}>
+          <Image
+            source={{
+              uri: user?.image_url,
+            }}
+            style={styles.icon}
+          />
+        </View>
+      </View>
+
+      <View style={styles.content}>
+        <Text style={styles.title}>Profile</Text>
+
+        <View style={styles.infoContainer}>
+          <View style={styles.labelContainer}>
+            <Text style={styles.label}>Username:</Text>
           </View>
+          <Input
+            value={user?.username}
+            disabled
+            containerStyle={styles.inputWrapper}
+            inputContainerStyle={styles.inputContainer}
+            inputStyle={styles.value}
+          />
         </View>
 
-        <View style={styles.content}>
-          <Text style={styles.title}>Profile</Text>
-
-          <View style={styles.infoContainer}>
-            <View style={styles.labelContainer}>
-              <Text style={styles.label}>Username:</Text>
-            </View>
-            <Input
-              value={user?.username}
-              disabled
-              containerStyle={styles.inputWrapper}
-              inputContainerStyle={styles.inputContainer}
-              inputStyle={styles.value}
-            />
+        <View style={styles.infoContainer}>
+          <View style={styles.labelContainer}>
+            <Text style={styles.label}>Email:</Text>
           </View>
-
-          <View style={styles.infoContainer}>
-            <View style={styles.labelContainer}>
-              <Text style={styles.label}>Email:</Text>
-            </View>
-            <Input
-              value={user?.email}
-              disabled
-              containerStyle={styles.inputWrapper}
-              inputContainerStyle={styles.inputContainer}
-              inputStyle={styles.value}
-            />
-          </View>
-
-          <View style={styles.infoContainer}>
-            <View style={styles.labelContainer}>
-              <Text style={styles.label}>Phone:</Text>
-            </View>
-            <Input
-              value={user?.phone}
-              disabled
-              containerStyle={styles.inputWrapper}
-              inputContainerStyle={styles.inputContainer}
-              inputStyle={styles.value}
-            />
-          </View>
-          <TouchableOpacity
-            style={styles.editProfileButton}
-            onPress={() => router.push("/pages/EditProfileScreen")}
-          >
-            <Text style={styles.editProfileText}>Edit Profile</Text>
-          </TouchableOpacity>
+          <Input
+            value={user?.email}
+            disabled
+            containerStyle={styles.inputWrapper}
+            inputContainerStyle={styles.inputContainer}
+            inputStyle={styles.value}
+          />
         </View>
-      </SafeAreaView>
-    </TouchableWithoutFeedback>
+
+        <View style={styles.infoContainer}>
+          <View style={styles.labelContainer}>
+            <Text style={styles.label}>Phone:</Text>
+          </View>
+          <Input
+            value={user?.phone}
+            disabled
+            containerStyle={styles.inputWrapper}
+            inputContainerStyle={styles.inputContainer}
+            inputStyle={styles.value}
+          />
+        </View>
+        <TouchableOpacity
+          style={styles.editProfileButton}
+          onPress={() => router.push("/pages/EditProfileScreen")}
+        >
+          <Text style={styles.editProfileText}>Edit Profile</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 }
 
@@ -176,25 +138,7 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     borderRadius: 100,
   },
-  fabContainer: {
-    position: "absolute",
-    bottom: 0,
-    right: 0,
-    alignItems: "flex-end",
-  },
-  fab: {
-    backgroundColor: "#007bff",
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 5,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-  },
+
   content: {
     alignItems: "center",
     marginTop: 20,
@@ -233,29 +177,5 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 18,
     color: "#333",
-  },
-  menu: {
-    position: "absolute",
-    bottom: 60,
-    right: 0,
-    backgroundColor: "white",
-    borderRadius: 10,
-    padding: 10,
-    elevation: 5,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    minWidth: 200,
-  },
-  menuItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-  },
-  menuText: {
-    fontSize: 16,
-    marginLeft: 10,
   },
 });

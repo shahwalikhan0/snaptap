@@ -89,7 +89,7 @@ const SignUpScreen = () => {
       } as any);
     } else {
       const imageUri = Image.resolveAssetSource(
-        require("@/assets/images/icon.png")
+        require("@/assets/images/userprofile-icon.png")
       ).uri;
       const fileName = imageUri.split("/").pop() || "icon.png";
       const fileType = `image/${fileName.split(".").pop()}`;

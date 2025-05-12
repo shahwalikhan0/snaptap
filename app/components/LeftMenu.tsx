@@ -34,6 +34,7 @@ const SideMenu = ({
     setSelectedItem(item);
     closeMenu();
   };
+
   return (
     <Modal
       isVisible={isVisible}
@@ -57,7 +58,6 @@ const SideMenu = ({
         <View style={styles.menuItemsWrapper}>
           <Text style={styles.menuTitle}>{user?.username || "Guest"}</Text>
           <View style={styles.divider} />
-
           <TouchableOpacity
             style={styles.menuItems}
             onPress={() => handleItemClick(MENU_ITEMS.PROFILE)}
@@ -66,7 +66,6 @@ const SideMenu = ({
             <Text>Personal Information</Text>
           </TouchableOpacity>
           <View style={styles.menuItemsDivider} />
-
           <TouchableOpacity
             style={styles.menuItems}
             onPress={() => handleItemClick(MENU_ITEMS.FAVOURITES)}
@@ -75,7 +74,6 @@ const SideMenu = ({
             <Text>Favourites</Text>
           </TouchableOpacity>
           <View style={styles.menuItemsDivider} />
-
           {/* <TouchableOpacity
             style={styles.menuItems}
             onPress={() => handleItemClick(MENU_ITEMS.SETTINGS)}
@@ -84,7 +82,6 @@ const SideMenu = ({
             <Text>Settings</Text>
           </TouchableOpacity>
           <View style={styles.menuItemsDivider} /> */}
-
           <TouchableOpacity
             style={styles.menuItems}
             onPress={() => handleItemClick(MENU_ITEMS.HELP)}

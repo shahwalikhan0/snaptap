@@ -329,9 +329,7 @@ const ProductView = () => {
 
         <View style={styles.ratingInputCard}>
           <Text style={styles.sectionTitle}>Your Rating</Text>
-          <View
-          // style={styles.starsRow}
-          >
+          <View style={styles.starsRow}>
             {[1, 2, 3, 4, 5].map((star) => (
               <TouchableOpacity
                 key={star}
@@ -611,8 +609,8 @@ const styles = StyleSheet.create({
   },
   starsRow: {
     flexDirection: "row",
-    marginTop: 12,
     justifyContent: "center",
+    marginVertical: 10,
   },
   sectionTitle: {
     fontSize: 22,
