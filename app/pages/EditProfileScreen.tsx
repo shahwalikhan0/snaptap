@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     resizeMode: "contain",
-    borderRadius: 50,
+    borderRadius: 100,
   },
   content: {
     alignItems: "center",
@@ -349,8 +349,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     marginTop: 20,
-    width: "100%",
+    marginHorizontal: 20, // ⬅️ Add this line
+    width: "auto", // Optional: prevent stretching full width
   },
+
   editProfileText: {
     color: "white",
     fontSize: 16,
