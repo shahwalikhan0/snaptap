@@ -14,7 +14,6 @@
 //   }
 export type ProductType = {
   id: number;
-  user_id: number;
   brand_id: number;
   name: string;
   description?: string;
@@ -25,4 +24,7 @@ export type ProductType = {
   image_url?: string;
   is_active: boolean;
   created_at: string;
+  is_favorite: Boolean;
+  rating: number;
+  brand_name?: string;
 };

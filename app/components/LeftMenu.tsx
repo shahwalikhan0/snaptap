@@ -9,10 +9,15 @@ import {
   Image,
   Dimensions,
   ScrollView,
+  Alert,
 } from "react-native";
 import Modal from "react-native-modal";
+import { useUser } from "../hooks/useUserContext";
+import { router } from "expo-router";
 
 const { width } = Dimensions.get("window");
+
+// const { user } = context;
 
 const SideMenu = ({
   isVisible,
@@ -23,10 +28,13 @@ const SideMenu = ({
   closeMenu: () => void;
   setSelectedItem: (item: string) => void;
 }) => {
+  const { user, setUser } = useUser(); // ✅ Hook used properly inside component
+
   const handleItemClick = (item: string) => {
     setSelectedItem(item);
     closeMenu();
   };
+
   return (
     <Modal
       isVisible={isVisible}
@@ -38,17 +46,18 @@ const SideMenu = ({
       style={styles.modal}
     >
       <ScrollView style={styles.sideMenuWrapper}>
-        <TouchableOpacity style={{ alignItems: "center" }}>
+        <TouchableOpacity style={{ alignItems: "center", marginTop: 40 }}>
           <Image
-            source={require("@/assets/images/userprofile-icon.png")}
+            source={{
+              uri: user?.image_url,
+            }}
             style={styles.icon}
           />
         </TouchableOpacity>
 
         <View style={styles.menuItemsWrapper}>
-          <Text style={styles.menuTitle}>Profile</Text>
+          <Text style={styles.menuTitle}>{user?.username || "Guest"}</Text>
           <View style={styles.divider} />
-
           <TouchableOpacity
             style={styles.menuItems}
             onPress={() => handleItemClick(MENU_ITEMS.PROFILE)}
@@ -57,35 +66,12 @@ const SideMenu = ({
             <Text>Personal Information</Text>
           </TouchableOpacity>
           <View style={styles.menuItemsDivider} />
-
-          <TouchableOpacity
-            style={styles.menuItems}
-            onPress={() => handleItemClick(MENU_ITEMS.PAYMENT)}
-          >
-            <Icon
-              name="credit-card"
-              size={15}
-              color="black"
-              type="font-awesome"
-            />
-            <Text>Payment & Subscriptions</Text>
-          </TouchableOpacity>
-          <View style={styles.menuItemsDivider} />
           <TouchableOpacity
             style={styles.menuItems}
             onPress={() => handleItemClick(MENU_ITEMS.FAVOURITES)}
           >
             <Icon name="heart" size={15} color="red" type="font-awesome" />
             <Text>Favourites</Text>
-          </TouchableOpacity>
-          <View style={styles.menuItemsDivider} />
-
-          <TouchableOpacity
-            style={styles.menuItems}
-            onPress={() => handleItemClick(MENU_ITEMS.SETTINGS)}
-          >
-            <Icon name="cog" size={20} color="black" type="font-awesome" />
-            <Text>Settings</Text>
           </TouchableOpacity>
           <View style={styles.menuItemsDivider} />
 
@@ -106,7 +92,11 @@ const SideMenu = ({
         <View style={styles.footerButtons}>
           <TouchableOpacity
             style={styles.logoutButton}
-            onPress={() => handleItemClick(MENU_ITEMS.HOME)}
+            onPress={() => {
+              setUser(null);
+              closeMenu();
+              Alert.alert("Logged Out", "You have been logged out.");
+            }}
           >
             <Text style={styles.logoutText}>Log Out</Text>
           </TouchableOpacity>

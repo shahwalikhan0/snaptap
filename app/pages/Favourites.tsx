@@ -1,83 +1,127 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
-  StyleSheet,
-  SafeAreaView,
-  TextInput,
   FlatList,
-  Dimensions,
+  StyleSheet,
+  ActivityIndicator,
+  SafeAreaView,
+  TouchableOpacity,
+  Text,
 } from "react-native";
-import { Text } from "@rneui/themed";
+import axios from "axios";
+import { useRouter } from "expo-router";
 import Card from "../components/Card";
-
-const screenWidth = Dimensions.get("window").width;
-const cardMargin = 16;
-const cardWidth = 180; // Base width for a card
-const numColumns = Math.floor(screenWidth / (cardWidth + cardMargin));
+import { ProductType } from "../types/product-type";
+import { BASE_URL } from "../constants/urls";
+import { useUser } from "../hooks/useUserContext";
+import { Dimensions } from "react-native";
 
 export default function FavouritesScreen() {
+  const screenWidth = Dimensions.get("window").width;
+
+  const [favorites, setFavorites] = useState<ProductType[]>([]);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const [refreshing, setRefreshing] = useState(false);
+  const context = useUser();
+  const { setUser, user } = context;
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      try {
+        const res = await axios.get(
+          `${BASE_URL}/api/favorites/user-id/${user?.id}`
+        );
+        setFavorites(res.data);
+      } catch (error) {
+        console.error("Failed to fetch favorites:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFavorites();
+  }, []);
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      const res = await axios.get(
+        `${BASE_URL}/api/favorites/user-id/${user?.id}`
+      );
+      setFavorites(res.data);
+    } catch (error) {
+      console.error("Refresh failed:", error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+  const renderItem = ({ item }: { item: ProductType }) => (
+    <TouchableOpacity
+      style={styles.cardWrapper}
+      onPress={() =>
+        router.push({
+          pathname: "/pages/ProductView",
+          params: { product: JSON.stringify(item) },
+        })
+      }
+    >
+      <Card data={item} width={screenWidth - 32} type="product" />
+    </TouchableOpacity>
+  );
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.text}>Favourites</Text>
-
-        {/* Search Bar */}
-        <TextInput
-          style={styles.searchBar}
-          placeholder="Search favourites..."
+    <View style={styles.container}>
+      {loading ? (
+        <ActivityIndicator
+          size="large"
+          color="#0077cc"
+          style={{ marginTop: 20 }}
         />
-
-        {/* Cards Grid */}
+      ) : favorites.length === 0 ? (
+        <Text style={styles.noResults}>No favorite products found.</Text>
+      ) : (
         <FlatList
-          data={[...Array(10)]} // Example data for 10 items
-          numColumns={numColumns}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={() => (
-            <View
-              style={[
-                styles.cardContainer,
-                { width: screenWidth / numColumns - cardMargin },
-              ]}
-            >
-              <Card width={cardWidth} />
-            </View>
-          )}
-          contentContainerStyle={styles.list}
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          data={favorites}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderItem}
+          ItemSeparatorComponent={() => <View style={styles.rowDivider} />}
+          contentContainerStyle={{ paddingBottom: 20 }}
         />
-      </View>
-    </SafeAreaView>
+      )}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    paddingTop: 20,
   },
-  content: {
-    flex: 1,
-    padding: 10,
-  },
-  text: {
-    fontSize: 20,
+  heading: {
+    fontSize: 22,
     fontWeight: "bold",
     textAlign: "center",
-    marginBottom: 10,
+    marginBottom: 12,
   },
-  searchBar: {
-    height: 40,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 10,
-    backgroundColor: "lightgrey",
-    paddingHorizontal: 10,
-    marginBottom: 15,
+  noResults: {
+    textAlign: "center",
+    color: "#888",
+    fontSize: 16,
+    marginTop: 30,
   },
-  list: {
-    justifyContent: "center",
+  row: {
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
   },
-  cardContainer: {
-    flex: 1,
-    margin: 8,
+  rowDivider: {
+    height: 1,
+    backgroundColor: "#ccc",
+    marginVertical: 8,
+    marginHorizontal: 16,
+  },
+  cardWrapper: {
+    paddingHorizontal: 16,
+    marginBottom: 12,
   },
 });

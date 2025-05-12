@@ -1,0 +1,4 @@
+snaptap blue: #00A8DE
+Dark Grey (for headings): #2e2e2e
+Medium Grey (for body text/subheadings): #555555
+Light Grey (for labels/hints/less important text): #888888

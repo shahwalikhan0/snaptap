@@ -1,92 +1,129 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, View, StyleSheet, TouchableOpacity } from "react-native";
-import { Text, Divider } from "@rneui/themed";
+import {
+  ScrollView,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+  RefreshControl,
+} from "react-native";
+import { Text, Divider, Icon } from "@rneui/themed";
 import Card from "../components/Card";
 import { useRouter } from "expo-router";
 import { BASE_URL } from "../constants/urls";
 import { ProductType } from "../types/product-type";
+import axios from "axios";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withTiming,
+} from "react-native-reanimated";
+import { useUser } from "../hooks/useUserContext";
 
-const sections = [
-  { title: "Products" },
-  { title: "Trending" },
-  { title: "Brands" },
-  { title: "New Arrivals" },
-];
-
-type Data = {
-  modelName: string;
-  productName: string;
-  productId: string;
-};
+const sections = [{ title: "Trending" }, { title: "New-Arrivals" }];
 
 const Home: React.FC = () => {
+  const context = useUser();
   const router = useRouter();
-  const [products, setProducts] = useState<ProductType[]>([]); // State to store model data
-  const [loading, setLoading] = useState(true); // State to track loading status
-  const [error, setError] = useState<string>(); // State to track errors
+  const [products, setProducts] = useState<ProductType[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState<string>();
+  const rotation = useSharedValue(0);
+  const { user } = context;
 
-  // Fetch model data from the server
+  const fetchModelData = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/api/products`);
+      setProducts(response.data);
+      setError(undefined);
+    } catch (error) {
+      console.error("Error fetching model data:", error);
+      setError("Failed to load data.");
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchModelData = async () => {
-      try {
-        const response = await fetch(`${BASE_URL}/api/products`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch model data");
-        }
-        const data = await response.json();
-        console.log("Fetched model data:", data); // Log the fetched data
-        setProducts(data);
-      } catch (error) {
-        console.error("Error fetching model data:", error);
-        setError("Failed");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchModelData();
+
+    // Start spinning animation
+    rotation.value = withRepeat(withTiming(360, { duration: 2000 }), -1);
   }, []);
 
-  // if (loading) {
-  //   return (
-  //     <View style={styles.container}>
-  //       <Text>Loading...</Text>
-  //     </View>
-  //   );
-  // }
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchModelData();
+  };
 
-  // if (error) {
-  //   return (
-  //     <View style={styles.container}>
-  //       <Text style={styles.errorText}>Error: {error}</Text>
-  //     </View>
-  //   );
-  // }
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${rotation.value}deg` }],
+  }));
+
+  if (loading) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.center}>
+        <Text style={styles.errorText}>{error}</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         {sections.map((section, index) => (
           <View key={index}>
             <Text style={styles.heading}>{section.title}</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {products &&
-                products.map((product: ProductType, i: number) => (
-                  <TouchableOpacity
-                    key={i}
-                    onPress={() =>
-                      router.push({
-                        pathname: "/pages/ProductView",
-                        params: { product: JSON.stringify(product) },
-                      })
-                    }
-                  >
-                    <Card data={product} width={150} />
-                  </TouchableOpacity>
-                ))}
+              {products.map((product: ProductType, i: number) => (
+                <TouchableOpacity
+                  key={i}
+                  onPress={() =>
+                    router.push({
+                      pathname: "/pages/ProductView",
+                      params: {
+                        productID: JSON.stringify(product.id),
+                      },
+                    })
+                  }
+                >
+                  <Card data={product} width={300} type="product" />
+                </TouchableOpacity>
+              ))}
 
-              <TouchableOpacity style={styles.showMore}>
-                <Text style={styles.showMoreText}>Show More</Text>
+              <TouchableOpacity
+                style={styles.showMore}
+                onPress={() =>
+                  router.push({
+                    pathname: "/pages/ShowMore",
+                    params: { sectionTitle: section.title },
+                  })
+                }
+              >
+                <Animated.View style={animatedStyle}>
+                  <Icon
+                    name="arrow-right"
+                    type="font-awesome"
+                    color="white"
+                    size={20}
+                  />
+                </Animated.View>
               </TouchableOpacity>
             </ScrollView>
 
@@ -103,18 +140,19 @@ const styles = StyleSheet.create({
   content: { paddingHorizontal: 10 },
   heading: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
   showMore: {
-    paddingHorizontal: 15,
-    backgroundColor: "#3498db",
-    borderRadius: 5,
+    height: 60,
+    width: 60,
+    borderRadius: 30,
+    backgroundColor: "#00A8DE",
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
     marginVertical: 10,
+    marginHorizontal: 10,
   },
-  errorText: {
-    color: "red",
-    textAlign: "center",
-    marginTop: 16,
-  },
-  showMoreText: { color: "white", fontSize: 16 },
   divider: { marginVertical: 15 },
+  center: { flex: 1, justifyContent: "center", alignItems: "center" },
+  errorText: { color: "red", fontSize: 16 },
 });
 
 export default Home;
