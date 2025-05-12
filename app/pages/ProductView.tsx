@@ -30,7 +30,6 @@ const ProductView = () => {
   const [feedbackTitle, setFeedbackTitle] = useState("");
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [isFeedbackExisting, setIsFeedbackExisting] = useState(false);
-  console.log(productID);
 
   const userId = isLoggedIn ? user?.id : "";
 
@@ -60,6 +59,15 @@ const ProductView = () => {
             setFeedbackMessage("");
             setIsFeedbackExisting(false);
           }
+          const androidARIntent = `intent://arvr.google.com/scene-viewer/1.0?file=${encodeURIComponent(
+            response.data.model_url
+          )}&mode=ar_preferred#Intent;scheme=https;package=com.google.ar.core;action=android.intent.action.VIEW;S.browser_fallback_url=${encodeURIComponent(
+            response.data.model_url
+          )};end;`;
+
+          useEffect(() => {
+            Linking.openURL(androidARIntent);
+          }, []);
         }
       } catch (error) {
         const err = error as AxiosError;
@@ -286,20 +294,46 @@ const ProductView = () => {
           )}
 
           <View style={styles.divider} />
-
-          <TouchableOpacity
-            style={styles.visitButton}
-            onPress={() => Linking.openURL("https://example.com/product")}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              paddingHorizontal: 16,
+            }}
           >
-            <Icon
-              name="globe"
-              type="font-awesome"
-              color="#00A8DE"
-              size={16}
-              style={{ marginRight: 8 }}
-            />
-            <Text style={styles.visitButtonText}>Visit Website</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.visitButton,
+                { flexDirection: "row", alignItems: "center" },
+              ]}
+              onPress={() => Linking.openURL("https://www.google.com")}
+            >
+              <Icon
+                name="globe"
+                type="font-awesome"
+                color="#00A8DE"
+                size={16}
+                style={{ marginRight: 8 }}
+              />
+              <Text style={styles.visitButtonText}>Visit Website</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.visitButton,
+                { flexDirection: "row", alignItems: "center" },
+              ]}
+              onPress={() => Linking.openURL(product?.model_url)}
+            >
+              <Icon
+                name="globe"
+                type="font-awesome"
+                color="#00A8DE"
+                size={16}
+                style={{ marginRight: 8 }}
+              />
+              <Text style={styles.visitButtonText}>View In AR</Text>
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={styles.descriptionCard}>
           <Text style={styles.sectionTitle}>Description</Text>
