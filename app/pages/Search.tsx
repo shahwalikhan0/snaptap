@@ -15,7 +15,7 @@ import { useRouter } from "expo-router";
 import { ProductType } from "../types/product-type";
 import { BASE_URL } from "../constants/urls";
 import Card from "../components/Card";
-import { useLocalSearchParams } from "expo-router"; // ⬅️ Add this at the top
+import { useLocalSearchParams } from "expo-router";
 
 const SearchScreen = () => {
   const [searchKey, setSearchKey] = useState("");
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 20,
-    backgroundColor: "#f7f9fc",
+    backgroundColor: "white",
   },
   searchInput: {
     borderWidth: 1,

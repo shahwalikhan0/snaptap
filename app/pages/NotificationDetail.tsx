@@ -14,7 +14,6 @@ export default function NotificationDetail() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Notificatiosn Image */}
       {image && (
         <Image
           source={require("@/assets/images/icon.png")}
@@ -22,13 +21,10 @@ export default function NotificationDetail() {
         />
       )}
 
-      {/* Sender Name */}
       <Text style={styles.sender}>From: {sender}</Text>
 
-      {/* Notification Title */}
       <Text style={styles.title}>{name}</Text>
       <ScrollView>
-        {/* Notification Description */}
         <Text style={styles.description}>{description}</Text>
       </ScrollView>
     </SafeAreaView>

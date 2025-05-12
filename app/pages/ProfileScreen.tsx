@@ -16,7 +16,7 @@ import { useRouter } from "expo-router";
 export default function ProfileScreen() {
   const router = useRouter();
 
-  const { user } = useUser(); // ✅ Access user from context
+  const { user } = useUser();
   const [menuVisible, setMenuVisible] = useState(false);
   const menuOpacity = useRef(new Animated.Value(0)).current;
 

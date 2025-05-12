@@ -66,8 +66,8 @@ export default function NotificationsScreen() {
             params: {
               name: item.title,
               description: item.message,
-              image: "", // Optional: Add image if available
-              sender: "SnapTap", // Placeholder, adjust if you have sender info
+              image: "",
+              sender: "SnapTap",
             },
           });
         }}

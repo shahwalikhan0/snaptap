@@ -46,7 +46,7 @@ const SideMenu = ({
       style={styles.modal}
     >
       <ScrollView style={styles.sideMenuWrapper}>
-        <TouchableOpacity style={{ alignItems: "center" }}>
+        <TouchableOpacity style={{ alignItems: "center", marginTop: 40 }}>
           <Image
             source={{
               uri: user?.image_url,
@@ -74,14 +74,7 @@ const SideMenu = ({
             <Text>Favourites</Text>
           </TouchableOpacity>
           <View style={styles.menuItemsDivider} />
-          {/* <TouchableOpacity
-            style={styles.menuItems}
-            onPress={() => handleItemClick(MENU_ITEMS.SETTINGS)}
-          >
-            <Icon name="cog" size={20} color="black" type="font-awesome" />
-            <Text>Settings</Text>
-          </TouchableOpacity>
-          <View style={styles.menuItemsDivider} /> */}
+
           <TouchableOpacity
             style={styles.menuItems}
             onPress={() => handleItemClick(MENU_ITEMS.HELP)}

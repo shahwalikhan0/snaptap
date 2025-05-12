@@ -59,7 +59,6 @@ const ViewBrandProducts = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <Text style={styles.title}>Products by {brandName}</Text> */}
       {loading ? (
         <ActivityIndicator size="large" color="#0077cc" />
       ) : products.length === 0 ? (

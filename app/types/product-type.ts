@@ -26,4 +26,5 @@ export type ProductType = {
   created_at: string;
   is_favorite: Boolean;
   rating: number;
+  brand_name?: string;
 };

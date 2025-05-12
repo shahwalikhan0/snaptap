@@ -37,7 +37,7 @@ const Home: React.FC = () => {
     try {
       const response = await axios.get(`${BASE_URL}/api/products`);
       setProducts(response.data);
-      setError(undefined); // Clear error if successful
+      setError(undefined);
     } catch (error) {
       console.error("Error fetching model data:", error);
       setError("Failed to load data.");

@@ -72,15 +72,44 @@ const SignUpScreen = () => {
   const validatePhone = (phone: string) => /^\d{10,}$/.test(phone);
 
   const handleSignUp = async () => {
-    const form = new FormData();
+    const newErrors: { [key: string]: string } = {};
 
+    if (!formData.username) {
+      newErrors.username = "Username is required";
+    } else if (/\s/.test(formData.username)) {
+      newErrors.username = "Username must not contain spaces";
+    }
+
+    if (!formData.email || !validateEmail(formData.email)) {
+      newErrors.email = "Invalid email address";
+    }
+
+    if (!formData.phone || !validatePhone(formData.phone)) {
+      newErrors.phone = "Invalid phone number";
+    }
+
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setErrors({}); // clear previous errors
+
+    const form = new FormData();
     form.append("username", formData.username);
     form.append("email", formData.email);
     form.append("phone", formData.phone);
     form.append("password", formData.password);
-    form.append("name", formData.username); // Assuming you want to reuse username for name
+    form.append("name", formData.username);
 
-    // Attach static image
     if (selectedImage) {
       form.append("image", {
         uri: selectedImage.uri,
@@ -100,7 +129,6 @@ const SignUpScreen = () => {
         type: fileType,
       } as any);
     }
-    console.log("Image sent:", selectedImage ?? "Default icon");
 
     try {
       const response = await axios.post(
@@ -129,7 +157,6 @@ const SignUpScreen = () => {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={pickImage}>
-        {/* {selectedImage && ( */}
         <Image
           source={
             selectedImage

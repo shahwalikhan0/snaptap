@@ -49,7 +49,6 @@ export default function HelpSupportScreen({ navigation }: { navigation: any }) {
       Alert.alert("Error", "Failed to open mail client.")
     );
 
-    // Optional: Reset and close modal
     setShowForm(false);
     setEmail("");
     setSubject("");
@@ -90,7 +89,6 @@ export default function HelpSupportScreen({ navigation }: { navigation: any }) {
         </View>
       </ScrollView>
 
-      {/* Modal for Contact Form */}
       <Modal
         visible={showForm}
         animationType="slide"

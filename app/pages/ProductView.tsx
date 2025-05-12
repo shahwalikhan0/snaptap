@@ -17,8 +17,7 @@ import { ProductType } from "../types/product-type";
 import axios, { AxiosError } from "axios";
 import { useUser } from "../hooks/useUserContext";
 import { Modal, TextInput } from "react-native";
-
-const BASE_URL = "https://snaptap.up.railway.app"; // <-- Your backend URL
+import { BASE_URL } from "../constants/urls";
 
 const ProductView = () => {
   const { productID } = useLocalSearchParams();
@@ -59,7 +58,7 @@ const ProductView = () => {
             setUserRating(0);
             setFeedbackTitle("");
             setFeedbackMessage("");
-            setIsFeedbackExisting(false); // ✅ No feedback yet
+            setIsFeedbackExisting(false);
           }
         }
       } catch (error) {
@@ -316,7 +315,7 @@ const ProductView = () => {
         <View style={styles.publisherCard}>
           <Text style={styles.sectionTitle}>Published By</Text>
           <View style={styles.publisherRow}>
-            <Text style={styles.publisherName}>Natalie</Text>
+            <Text style={styles.publisherName}>{product.brand_name}</Text>
             {product.image_url && (
               <Image
                 source={{ uri: product.image_url }}
@@ -454,44 +453,38 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 12,
     fontSize: 16,
-  },
-  scrollDescription: {
-    maxHeight: 150, // ~5 lines depending on font size
+    backgroundColor: "#fff",
   },
   submitButton: {
     backgroundColor: "#00A8DE",
-    paddingVertical: 12,
     borderRadius: 10,
+    padding: 12,
     alignItems: "center",
     marginBottom: 10,
   },
   submitButtonText: {
     color: "#fff",
-    fontSize: 16,
     fontWeight: "bold",
+    fontSize: 16,
   },
   cancelText: {
     color: "#888",
-    fontSize: 14,
     textAlign: "center",
+    marginTop: 8,
+    fontSize: 14,
   },
-
   card: {
-    backgroundColor: "#ffffff",
-    borderRadius: 16,
-    padding: 18,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 16,
     marginBottom: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 4,
+    elevation: 3,
   },
   title: {
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: "bold",
-    color: "#2e2e2e",
-    marginBottom: 10,
+    marginBottom: 8,
+    color: "#333",
   },
   cardRow: {
     flexDirection: "row",
@@ -503,119 +496,91 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   ratingText: {
-    fontSize: 18,
-    color: "gold",
-    fontWeight: "600",
-    marginRight: 4,
-  },
-  reviewText: {
     fontSize: 16,
-    color: "#7d7d7d",
-  },
-  categoryBadge: {
-    backgroundColor: "#d1ecf9",
-    paddingVertical: 4,
-    paddingHorizontal: 10,
-    borderRadius: 12,
-  },
-  categoryText: {
-    fontSize: 14,
-    color: "#0077cc",
     fontWeight: "500",
   },
+  categoryBadge: {
+    backgroundColor: "#00A8DE20",
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 8,
+  },
+  categoryText: {
+    fontSize: 12,
+    color: "#00A8DE",
+  },
   price: {
-    fontSize: 26,
-    color: "#555555",
+    fontSize: 18,
     fontWeight: "bold",
-    marginVertical: 12,
+    marginTop: 8,
+    color: "#00A8DE",
   },
   divider: {
     height: 1,
-    backgroundColor: "#00A8DE",
+    backgroundColor: "#ddd",
     marginVertical: 12,
   },
   visitButton: {
     flexDirection: "row",
-    backgroundColor: "#ffffff",
-    paddingVertical: 12,
-    borderRadius: 12,
     alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "#00A8DE",
+    marginTop: 8,
   },
   visitButtonText: {
     color: "#00A8DE",
     fontSize: 16,
-    fontWeight: "600",
   },
   descriptionCard: {
-    backgroundColor: "#ffffff",
-    borderRadius: 16,
-    padding: 18,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 16,
     marginBottom: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 5,
-    elevation: 4,
+    elevation: 2,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 8,
+    color: "#333",
+  },
+  scrollDescription: {
+    maxHeight: 150,
   },
   descriptionText: {
-    fontSize: 16,
-    color: "#555555",
-    lineHeight: 22,
-    textAlign: "left",
+    fontSize: 14,
+    color: "#444",
   },
   publisherCard: {
-    backgroundColor: "#ffffff",
-    borderRadius: 16,
-    padding: 18,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 16,
     marginBottom: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 5,
-    elevation: 4,
+    elevation: 2,
   },
   publisherRow: {
     flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
-    justifyContent: "flex-start",
-    width: "100%",
   },
   publisherName: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "600",
-    color: "#555555",
-    marginRight: 10,
-    flex: 1,
+    color: "#333",
   },
   publisherImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
   },
   ratingInputCard: {
-    backgroundColor: "#ffffff",
-    borderRadius: 16,
-    padding: 18,
-    marginBottom: 16,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 5,
-    elevation: 4,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 32,
+    elevation: 2,
   },
   starsRow: {
     flexDirection: "row",
     justifyContent: "center",
-    marginVertical: 10,
-  },
-  sectionTitle: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#2e2e2e",
-    marginBottom: 10,
+    marginTop: 8,
   },
 });
