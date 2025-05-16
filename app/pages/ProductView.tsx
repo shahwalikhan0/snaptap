@@ -6,8 +6,10 @@ import {
   Linking,
   Image,
   ScrollView,
+  Platform,
   Alert,
   ActivityIndicator,
+  Pressable,
 } from "react-native";
 import { WebView } from "react-native-webview";
 import { Icon } from "@rneui/themed";
@@ -36,13 +38,11 @@ const ProductView = () => {
   useEffect(() => {
     const fetchProductAndFeedback = async () => {
       try {
-        // Fetch product
         const response = await axios.get(
           `${BASE_URL}/api/products/product-detail/${productID}?userId=${userId}`
         );
         setProduct(response.data);
 
-        // Fetch feedback
         if (userId && productID) {
           const feedbackResponse = await axios.get(
             `${BASE_URL}/api/feedbacks/user-feedback/${userId}/${productID}`
@@ -52,22 +52,23 @@ const ProductView = () => {
             setUserRating(feedback.current_rating);
             setFeedbackTitle(feedback.title);
             setFeedbackMessage(feedback.message);
-            setIsFeedbackExisting(true); // ✅ Feedback exists
+            setIsFeedbackExisting(true);
           } else {
             setUserRating(0);
             setFeedbackTitle("");
             setFeedbackMessage("");
             setIsFeedbackExisting(false);
           }
+
+          // Generate AR Intent
           const androidARIntent = `intent://arvr.google.com/scene-viewer/1.0?file=${encodeURIComponent(
             response.data.model_url
           )}&mode=ar_preferred#Intent;scheme=https;package=com.google.ar.core;action=android.intent.action.VIEW;S.browser_fallback_url=${encodeURIComponent(
             response.data.model_url
           )};end;`;
 
-          useEffect(() => {
-            Linking.openURL(androidARIntent);
-          }, []);
+          // ✅ Open the AR viewer directly
+          Linking.openURL(androidARIntent);
         }
       } catch (error) {
         const err = error as AxiosError;
@@ -231,7 +232,15 @@ const ProductView = () => {
       Alert.alert("Error", "Something went wrong. Please try again.");
     }
   };
-
+  const handleBrandPress = () => {
+    router.push({
+      pathname: "/pages/ViewBrandProducts",
+      params: {
+        brandName: product.brand_name,
+        brandID: product.brand_id,
+      },
+    });
+  };
   return (
     <View style={styles.container}>
       <View style={styles.modelContainer}>
@@ -322,7 +331,21 @@ const ProductView = () => {
                 styles.visitButton,
                 { flexDirection: "row", alignItems: "center" },
               ]}
-              onPress={() => Linking.openURL(product?.model_url)}
+              onPress={() => {
+                if (Platform.OS === "android") {
+                  const sceneViewerUrl = `intent://arvr.google.com/scene-viewer/1.0?file=${encodeURIComponent(
+                    product.model_url
+                  )}&mode=ar_preferred#Intent;scheme=https;package=com.google.ar.core;action=android.intent.action.VIEW;end;`;
+
+                  Linking.openURL(sceneViewerUrl).catch((err) =>
+                    console.error("Error launching AR on Android:", err)
+                  );
+                } else if (Platform.OS === "ios") {
+                  Linking.openURL(`${product.model_url}.usdz`).catch((err) =>
+                    console.error("Error launching AR on iOS:", err)
+                  );
+                }
+              }}
             >
               <Icon
                 name="globe"
@@ -349,7 +372,9 @@ const ProductView = () => {
         <View style={styles.publisherCard}>
           <Text style={styles.sectionTitle}>Published By</Text>
           <View style={styles.publisherRow}>
-            <Text style={styles.publisherName}>{product.brand_name}</Text>
+            <Pressable onPress={handleBrandPress}>
+              <Text style={styles.publisherName}>{product.brand_name}</Text>
+            </Pressable>
             {product.image_url && (
               <Image
                 source={{ uri: product.image_url }}
